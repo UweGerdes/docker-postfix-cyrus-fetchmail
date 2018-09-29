@@ -27,7 +27,8 @@ RUN apt-get update && \
 
 COPY etc/aliases /etc/aliases
 
-RUN newaliases
+RUN echo "root:${USERNAME}" >> /etc/aliases && \
+	newaliases
 
 RUN postconf -e myhostname=$MAILDOMAIN && \
 	postconf -e mydestination="$MAILDOMAIN, localhost.localdomain, localhost" && \
