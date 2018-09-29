@@ -25,10 +25,22 @@ RUN apt-get update && \
 #	apt-get clean && \
 #	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
-COPY entrypoint.sh /entrypoint.sh
-RUN chmod a+x /entrypoint.sh
+COPY etc/aliases /etc/aliases
+
+RUN newaliases
+
+RUN postconf -e myhostname=$MAILDOMAIN && \
+	postconf -e mydestination="$MAILDOMAIN, localhost.localdomain, localhost" && \
+	postconf -e relayhost=$SMTPSERVER && \
+	postconf -e mynetworks=0.0.0.0/0 && \
+	postconf -e message_size_limit=30720000 && \
+	postconf -e inet_protocols=ipv4 && \
+	postconf -F 'lmtp/*/chroot = n'
+
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod 755 /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 EXPOSE 25/tcp 465/tcp 587/tcp 110/tcp 143/tcp
 
 CMD ["postfix","start-fg"]
-
