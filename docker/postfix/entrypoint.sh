@@ -19,3 +19,5 @@ else
 	ls -l /etc/aliases*
 	cat /etc/aliases
 fi
+
+exec "$@"
