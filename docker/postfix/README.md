@@ -23,6 +23,7 @@ Run the postfix container with:
 $ docker run -it \
 	--name postfix \
 	-p 25:25 \
+	--volumes-from maildata \
 	uwegerdes/postfix \
 	bash
 ```
