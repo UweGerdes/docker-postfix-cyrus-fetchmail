@@ -45,6 +45,10 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -F 'smtp/inet/chroot = n' && \
 	postconf -F 'lmtp/*/chroot = n'
 
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod 755 /usr/local/bin/entrypoint.sh
+ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+
 EXPOSE 25/tcp
 
 VOLUME [ "/var/spool/postfix" ]
