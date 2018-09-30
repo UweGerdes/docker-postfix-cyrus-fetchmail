@@ -9,8 +9,6 @@ $ docker build \
 	-t uwegerdes/postfix \
 	--build-arg MAILNAME=$(hostname) \
 	--build-arg SMTPSERVER=smtp.server.com \
-	--build-arg SMTPUSERNAME=user@server.com \
-	--build-arg SMTPPASSWORD=mysecretpassword \
 	--build-arg SENDERCANONICAL=user@server.com \
 	.
 ```
