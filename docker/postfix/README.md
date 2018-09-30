@@ -22,6 +22,7 @@ Run the postfix container with:
 ```bash
 $ docker run -it \
 	--name postfix \
+	-p 25:25 \
 	uwegerdes/postfix \
 	bash
 ```

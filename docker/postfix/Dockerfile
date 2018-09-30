@@ -42,11 +42,8 @@ RUN postconf -e myhostname=$MAILDOMAIN && \
 	postconf -e smtp_sasl_security_options=noanonymous && \
 	postconf -e smtp_sasl_password_maps=hash:/etc/postfix/sasl_password && \
 	postconf -e sender_canonical_maps=hash:/etc/postfix/sender_canonical && \
+	postconf -F 'smtp/inet/chroot = n' && \
 	postconf -F 'lmtp/*/chroot = n'
-
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod 755 /usr/local/bin/entrypoint.sh
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 EXPOSE 25/tcp
 
