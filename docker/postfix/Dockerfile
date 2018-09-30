@@ -52,6 +52,4 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 EXPOSE 25/tcp
 
-VOLUME [ "/var/spool/postfix" ]
-
 CMD ["postfix","start-fg"]
