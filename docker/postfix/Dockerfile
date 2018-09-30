@@ -5,10 +5,8 @@ MAINTAINER Uwe Gerdes <entwicklung@uwegerdes.de>
 
 ARG USERNAME='mailbox'
 ARG PASSWORD='mailpass'
-ARG MAILDOMAIN='mailpass'
+ARG MAILDOMAIN='hostname'
 ARG SMTPSERVER=smtp.server.com
-ARG SMTPUSERNAME=user@server.com
-ARG SMTPPASSWORD=mysecretpassword
 ARG SENDERCANONICAL=user@server.com
 
 ENV USERNAME=${USERNAME}
@@ -35,7 +33,7 @@ RUN echo "root:${USERNAME}" >> /etc/aliases && \
 	postmap /etc/postfix/sender_canonical
 
 RUN postconf -e myhostname=$MAILDOMAIN && \
-	postconf -e mydestination="$MAILDOMAIN, localhost.localdomain, localhost" && \
+	postconf -e mydestination="$MAILDOMAIN, $MAILDOMAIN.localdomain, localhost.localdomain, localhost" && \
 	postconf -e relayhost=$SMTPSERVER && \
 	postconf -e mynetworks=0.0.0.0/0 && \
 	postconf -e message_size_limit=30720000 && \
