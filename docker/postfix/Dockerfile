@@ -13,20 +13,18 @@ ENV USERNAME=${USERNAME}
 ENV PASSWORD=${PASSWORD}
 ENV MAILNAME=${MAILNAME}
 
-RUN apt-get update && \
-	apt-get install -y \
-					libsasl2-modules \
-					postfix
-
-# && \
-#	apt-get clean && \
-#	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
-
 COPY etc/aliases /etc/aliases
 COPY etc/postfix/sasl_password /etc/postfix/sasl_password
 
+RUN echo "root:${USERNAME}" >> /etc/aliases && \
+	apt-get update && \
+	apt-get install -y \
+					libsasl2-modules \
+					postfix && \
+	apt-get clean && \
+	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
 RUN echo "${MAILNAME}" > /etc/mailname && \
-	echo "root:${USERNAME}" >> /etc/aliases && \
 	newaliases && \
 	chmod 600 /etc/postfix/sasl_password && \
 	postmap /etc/postfix/sasl_password && \
