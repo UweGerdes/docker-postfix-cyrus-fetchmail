@@ -1,4 +1,4 @@
-# data image to share directories
+# maildata image to share volumes
 
 FROM uwegerdes/baseimage
 MAINTAINER Uwe Gerdes <entwicklung@uwegerdes.de>
@@ -10,4 +10,3 @@ RUN mkdir -p ${POSTFIX}
 VOLUME [ "${POSTFIX}" ]
 
 CMD [ "true" ]
-
