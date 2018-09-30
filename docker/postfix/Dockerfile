@@ -5,13 +5,13 @@ MAINTAINER Uwe Gerdes <entwicklung@uwegerdes.de>
 
 ARG USERNAME='mailbox'
 ARG PASSWORD='mailpass'
-ARG MAILDOMAIN='hostname'
+ARG MAILNAME='hostname'
 ARG SMTPSERVER=smtp.server.com
 ARG SENDERCANONICAL=user@server.com
 
 ENV USERNAME=${USERNAME}
 ENV PASSWORD=${PASSWORD}
-ENV MAILDOMAIN=${MAILDOMAIN}
+ENV MAILNAME=${MAILNAME}
 
 RUN apt-get update && \
 	apt-get install -y \
@@ -25,15 +25,17 @@ RUN apt-get update && \
 COPY etc/aliases /etc/aliases
 COPY etc/postfix/sasl_password /etc/postfix/sasl_password
 
-RUN echo "root:${USERNAME}" >> /etc/aliases && \
+RUN echo "${MAILNAME}" > /etc/mailname && \
+	echo "root:${USERNAME}" >> /etc/aliases && \
 	newaliases && \
 	chmod 600 /etc/postfix/sasl_password && \
 	postmap /etc/postfix/sasl_password && \
 	echo "root ${SENDERCANONICAL}" > /etc/postfix/sender_canonical && \
 	postmap /etc/postfix/sender_canonical
 
-RUN postconf -e myhostname=$MAILDOMAIN && \
-	postconf -e mydestination="$MAILDOMAIN, $MAILDOMAIN.localdomain, localhost.localdomain, localhost" && \
+RUN postconf -e myorigin=/etc/mailname && \
+	postconf -e myhostname=$MAILNAME && \
+	postconf -e mydestination="$MAILNAME, $MAILNAME.localdomain, localhost.localdomain, localhost" && \
 	postconf -e relayhost=$SMTPSERVER && \
 	postconf -e mynetworks=0.0.0.0/0 && \
 	postconf -e message_size_limit=30720000 && \
