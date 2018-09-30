@@ -11,6 +11,7 @@ $ docker build \
 	--build-arg SMTPSERVER=smtp.server.com \
 	--build-arg SMTPUSERNAME=user@server.com \
 	--build-arg SMTPPASSWORD=mysecretpassword \
+	--build-arg SENDERCANONICAL=user@server.com \
 	.
 ```
 
@@ -19,8 +20,8 @@ $ docker build \
 Run the postfix container with:
 
 ```bash
-$ docker run -d \
-	--hostname postfix \
+$ docker run -it \
 	--name postfix \
-	uwegerdes/postfix
+	uwegerdes/postfix \
+	bash
 ```
