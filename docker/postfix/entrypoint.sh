@@ -2,7 +2,7 @@
 
 if [ -n "$(find "/var/spool/postfix/" -maxdepth 0 -type d -empty 2>/dev/null)" ]; then
     echo "populating postfix directory"
-    cp -R /var/spool/postfix.init/* /var/spool/postfix
+    cp -rp /var/spool/postfix.init/* /var/spool/postfix
 fi
 
 exec "$@"
