@@ -43,7 +43,8 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e smtp_sasl_password_maps=hash:/etc/postfix/sasl_password && \
 	postconf -e sender_canonical_maps=hash:/etc/postfix/sender_canonical && \
 	postconf -F 'smtp/inet/chroot = n' && \
-	postconf -F 'lmtp/*/chroot = n'
+	postconf -F 'lmtp/*/chroot = n' && \
+	cp -R /var/spool/postfix /var/spool/postfix.init
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod 755 /usr/local/bin/entrypoint.sh
