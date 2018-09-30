@@ -25,10 +25,10 @@ RUN apt-get update && \
 #	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 COPY etc/aliases /etc/aliases
+COPY etc/postfix/sasl_password /etc/postfix/sasl_password
 
 RUN echo "root:${USERNAME}" >> /etc/aliases && \
 	newaliases && \
-	echo "${SMTPSERVER} ${SMTPUSERNAME}:${SMTPPASSWORD}" > /etc/postfix/sasl_password && \
 	chmod 600 /etc/postfix/sasl_password && \
 	postmap /etc/postfix/sasl_password && \
 	echo "root ${SENDERCANONICAL}" > /etc/postfix/sender_canonical && \
@@ -41,7 +41,7 @@ RUN postconf -e myhostname=$MAILDOMAIN && \
 	postconf -e message_size_limit=30720000 && \
 	postconf -e inet_protocols=ipv4 && \
 	postconf -e smtp_sasl_auth_enable=yes && \
-	postconf -e smtp_sasl_security_options="noplaintext noanonymous" && \
+	postconf -e smtp_sasl_security_options=noanonymous && \
 	postconf -e smtp_sasl_password_maps=hash:/etc/postfix/sasl_password && \
 	postconf -e sender_canonical_maps=hash:/etc/postfix/sender_canonical && \
 	postconf -F 'lmtp/*/chroot = n'
