@@ -47,4 +47,6 @@ RUN postconf -e myorigin=/etc/mailname && \
 
 EXPOSE 25/tcp
 
+VOLUME [ "/var/spool/postfix" ]
+
 CMD ["postfix","start-fg"]
