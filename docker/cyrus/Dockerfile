@@ -11,11 +11,11 @@ ENV PASSWORD=${PASSWORD}
 
 RUN apt-get update && \
 	apt-get install -y \
-					cyrus-admin-2.4 \
-					cyrus-clients-2.4 \
-					cyrus-common-2.4 \
-					cyrus-imapd-2.4 \
-					cyrus-pop3d-2.4 \
+					cyrus-admin \
+					cyrus-clients \
+					cyrus-common \
+					cyrus-imapd \
+					cyrus-pop3d \
 					sasl2-bin
 
 # && \
