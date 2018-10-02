@@ -19,8 +19,15 @@ COPY etc/postfix/sasl_password /etc/postfix/sasl_password
 RUN echo "root:${USERNAME}" >> /etc/aliases && \
 	apt-get update && \
 	apt-get install -y \
+					cyrus-admin \
+					cyrus-clients \
+					cyrus-common \
+					cyrus-imapd \
+					cyrus-pop3d \
+					fetchmail \
 					libsasl2-modules \
-					postfix && \
+					postfix \
+					sasl2-bin && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -51,5 +58,6 @@ RUN chmod 755 /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 EXPOSE 25/tcp
+#EXPOSE 110/tcp 143/tcp 465/tcp 587/tcp
 
 CMD ["postfix","start-fg"]

@@ -1,4 +1,4 @@
-# Docker uwegerdes/postfix
+# Docker uwegerdes/mailserver
 
 ## Build
 
@@ -6,7 +6,7 @@ Build the image with (mind the dot):
 
 ```bash
 $ docker build \
-	-t uwegerdes/postfix \
+	-t uwegerdes/mailserver \
 	--build-arg MAILNAME=$(hostname) \
 	--build-arg SMTPSERVER=smtp.server.com \
 	--build-arg SENDERCANONICAL=user@server.com \
@@ -15,14 +15,14 @@ $ docker build \
 
 ## Usage
 
-Run the postfix container with:
+Run the mailserver container with:
 
 ```bash
 $ docker run -it \
-	--name postfix \
+	--name mailserver \
 	-p 25:25 \
 	--volume /srv/docker/postfix:/var/spool/postfix \
-	uwegerdes/postfix \
+	uwegerdes/mailserver \
 	bash
 ```
 
