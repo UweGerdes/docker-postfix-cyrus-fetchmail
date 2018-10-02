@@ -55,12 +55,12 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -F 'smtp/inet/chroot = n' && \
 	postconf -F 'lmtp/*/chroot = n' && \
 	cp -rp /var/spool/postfix /var/spool/postfix.init && \
-	sed -i -e 's/#(munge8bit: no)/$1/' /etc/imapd.conf && \
-	sed -i -e 's/#(admins: cyrus)/$1/' /etc/imapd.conf && \
-	sed -i -e 's/#(sasl_mech_list: PLAIN)/$1/' /etc/imapd.conf && \
-	sed -i -e 's/sasl_pwcheck_method: auxprop/sasl_pwcheck_method: saslauthd/' /etc/imapd.conf && \
-	sed -i -e 's/START=no/START=yes/' /etc/default/saslauthd && \
-	sed -i -e 's/^MECHANISMS=".+"/MECHANISMS="sasldb"/' /etc/default/saslauthd && \
+	sed -i -E 's/#(munge8bit: no)/$1/' /etc/imapd.conf && \
+	sed -i -E 's/#(admins: cyrus)/$1/' /etc/imapd.conf && \
+	sed -i -E 's/#(sasl_mech_list: PLAIN)/$1/' /etc/imapd.conf && \
+	sed -i -E 's/^sasl_pwcheck_method: auxprop/sasl_pwcheck_method: saslauthd/' /etc/imapd.conf && \
+	sed -i -E 's/^START=no/START=yes/' /etc/default/saslauthd && \
+	sed -i -E 's/^MECHANISMS=".+"/MECHANISMS="sasldb"/' /etc/default/saslauthd && \
 	/home/cyrus/cyrususers.sh
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
