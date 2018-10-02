@@ -15,6 +15,9 @@ ENV MAILNAME=${MAILNAME}
 
 COPY etc/aliases /etc/aliases
 COPY etc/postfix/sasl_password /etc/postfix/sasl_password
+COPY cyrususers /home/cyrus/cyrususers
+COPY cyrususers.sh /home/cyrus/cyrususers.sh
+RUN chmod 755 /home/cyrus/cyrususers.sh
 
 RUN echo "root:${USERNAME}" >> /etc/aliases && \
 	apt-get update && \
@@ -51,7 +54,8 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e sender_canonical_maps=hash:/etc/postfix/sender_canonical && \
 	postconf -F 'smtp/inet/chroot = n' && \
 	postconf -F 'lmtp/*/chroot = n' && \
-	cp -rp /var/spool/postfix /var/spool/postfix.init
+	cp -rp /var/spool/postfix /var/spool/postfix.init && \
+	/home/cyrus/cyrususers.sh
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod 755 /usr/local/bin/entrypoint.sh

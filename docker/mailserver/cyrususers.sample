@@ -1,0 +1,4 @@
+# cyrus users and passwords
+cyrus:cyrpasswd
+mailbox:mailpass
+user2:userpassword
