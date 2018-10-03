@@ -1,6 +1,6 @@
 # postfix docker
 
-FROM uwegerdes/baseimage
+FROM uwegerdes/baseimage-rpi-stretch
 MAINTAINER Uwe Gerdes <entwicklung@uwegerdes.de>
 
 ARG USERNAME='mailbox'
