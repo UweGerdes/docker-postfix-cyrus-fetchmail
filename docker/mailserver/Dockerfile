@@ -17,7 +17,6 @@ ENV FETCHMAILUSER=root
 
 COPY etc/aliases /etc/aliases
 COPY etc/postfix/sasl_password /etc/postfix/sasl_password
-COPY etc/supervisor/conf.d/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
 COPY opt/postfix.sh /opt/postfix.sh
 RUN chmod 755 /opt/postfix.sh
 COPY root/cyrususers /root/cyrususers
@@ -37,8 +36,7 @@ RUN apt-get update && \
 		libsasl2-modules \
 		postfix \
 		rsyslog \
-		sasl2-bin \
-		supervisor && \
+		sasl2-bin && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
 	adduser postfix mail
