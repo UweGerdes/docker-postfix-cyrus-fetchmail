@@ -17,6 +17,9 @@ ENV FETCHMAILUSER=root
 
 COPY etc/aliases /etc/aliases
 COPY etc/postfix/sasl_password /etc/postfix/sasl_password
+COPY etc/supervisor/conf.d/supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+COPY opt/postfix.sh /opt/postfix.sh
+RUN chmod 755 /opt/postfix.sh
 COPY root/cyrususers /root/cyrususers
 COPY root/cyrususers.sh /root/cyrususers.sh
 RUN chmod 755 /root/cyrususers.sh
@@ -33,7 +36,9 @@ RUN apt-get update && \
 		fetchmail \
 		libsasl2-modules \
 		postfix \
-		sasl2-bin && \
+		rsyslog \
+		sasl2-bin \
+		supervisor && \
 	adduser postfix mail
 
 #	apt-get clean && \
@@ -78,4 +83,4 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 EXPOSE 25/tcp
 #EXPOSE 110/tcp 143/tcp 465/tcp 587/tcp
 
-CMD ["postfix","start-fg"]
+CMD ["/usr/bin/supervisord","-c","/etc/supervisor/supervisord.conf"]
