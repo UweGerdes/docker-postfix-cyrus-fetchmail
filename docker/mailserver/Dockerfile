@@ -17,8 +17,7 @@ COPY etc/postfix/sasl_password /etc/postfix/sasl_password
 COPY opt/postfix.sh /opt/postfix.sh
 RUN chmod 755 /opt/postfix.sh
 COPY root/cyrususers /root/cyrususers
-COPY root/cyrususers.sh /root/cyrususers.sh
-RUN chmod 755 /root/cyrususers.sh
+RUN chmod 600 /root/cyrususers
 COPY root/fetchmailrc /root/fetchmailrc
 RUN chmod 600 /root/fetchmailrc
 
