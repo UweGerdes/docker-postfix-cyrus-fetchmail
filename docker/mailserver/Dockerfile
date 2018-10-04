@@ -30,9 +30,9 @@ RUN echo "root:${USERNAME}" >> /etc/aliases && \
 					fetchmail \
 					libsasl2-modules \
 					postfix \
-					sasl2-bin
+					sasl2-bin && \
+	adduser postfix mail
 
-#					 && \
 #	apt-get clean && \
 #	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -54,15 +54,16 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e smtp_sasl_security_options=noanonymous && \
 	postconf -e smtp_sasl_password_maps=hash:/etc/postfix/sasl_password && \
 	postconf -e sender_canonical_maps=hash:/etc/postfix/sender_canonical && \
+	postconf -e mailbox_transport=lmtp:unix:/var/run/cyrus/socket/lmtp && \
 	postconf -F 'smtp/inet/chroot = n' && \
-	postconf -F 'lmtp/*/chroot = n' && \
+	postconf -F 'lmtp/unix/chroot = n' && \
 	cp -rp /var/spool/postfix /var/spool/postfix.init && \
-	sed -i \
+	sed -i -r \
 		-e 's/#(munge8bit: no)/\1/' \
 		-e 's/#(admins: cyrus)/\1/' \
 		-e 's/#(sasl_mech_list: PLAIN)/\1/' \
 		-e 's/^sasl_pwcheck_method: auxprop/sasl_pwcheck_method: saslauthd/' /etc/imapd.conf && \
-	sed -i \
+	sed -i -r \
 		-e 's/^START=no/START=yes/' \
 		-e 's/^MECHANISMS=".+"/MECHANISMS="sasldb"/' /etc/default/saslauthd && \
 	/root/cyrususers.sh
