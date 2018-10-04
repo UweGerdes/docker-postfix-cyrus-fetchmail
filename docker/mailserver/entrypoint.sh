@@ -5,4 +5,7 @@ if [ -n "$(find "/var/spool/postfix/" -maxdepth 0 -type d -empty 2>/dev/null)" ]
     cp -rp /var/spool/postfix.init/* /var/spool/postfix
 fi
 
+echo "postfix set-permissions"
+postfix set-permissions
+
 exec "$@"
