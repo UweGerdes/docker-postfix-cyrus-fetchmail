@@ -16,24 +16,24 @@ ENV FETCHMAILHOME=/root
 ENV FETCHMAILUSER=root
 
 COPY etc/aliases /etc/aliases
-COPY root/fetchmailrc /root/fetchmailrc
-RUN chmod 600 /root/fetchmailrc
 COPY etc/postfix/sasl_password /etc/postfix/sasl_password
 COPY root/cyrususers /root/cyrususers
 COPY root/cyrususers.sh /root/cyrususers.sh
 RUN chmod 755 /root/cyrususers.sh
+COPY root/fetchmailrc /root/fetchmailrc
+RUN chmod 600 /root/fetchmailrc
 
 RUN apt-get update && \
 	apt-get install -y \
-					cyrus-admin \
-					cyrus-clients \
-					cyrus-common \
-					cyrus-imapd \
-					cyrus-pop3d \
-					fetchmail \
-					libsasl2-modules \
-					postfix \
-					sasl2-bin && \
+		cyrus-admin \
+		cyrus-clients \
+		cyrus-common \
+		cyrus-imapd \
+		cyrus-pop3d \
+		fetchmail \
+		libsasl2-modules \
+		postfix \
+		sasl2-bin && \
 	adduser postfix mail
 
 #	apt-get clean && \
