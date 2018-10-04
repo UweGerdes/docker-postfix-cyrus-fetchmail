@@ -12,10 +12,11 @@ ARG SENDERCANONICAL=user@server.com
 ENV USERNAME=${USERNAME}
 ENV PASSWORD=${PASSWORD}
 ENV MAILNAME=${MAILNAME}
+ENV $FETCHMAILHOME=/root
 
 COPY etc/aliases /etc/aliases
-COPY etc/fetchmail /etc/fetchmail
-RUN chmod 600 /etc/fetchmail
+COPY root/fetchmailrc /root/fetchmailrc
+RUN chmod 600 /root/fetchmailrc
 COPY etc/postfix/sasl_password /etc/postfix/sasl_password
 COPY cyrususers /root/cyrususers
 COPY cyrususers.sh /root/cyrususers.sh
