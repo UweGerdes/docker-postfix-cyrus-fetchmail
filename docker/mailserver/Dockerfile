@@ -67,6 +67,9 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -F 'lmtp/unix/chroot = n' && \
 	cp -rp /var/spool/postfix /var/spool/postfix.init && \
 	sed -i -r \
+		-e 's/(\s)(nntp\s)/\1#\2/' \
+		-e 's/(\s)(http\s)/\1#\2/' /etc/cyrus.conf && \
+	sed -i -r \
 		-e 's/#(munge8bit: no)/\1/' \
 		-e 's/#(admins: cyrus)/\1/' \
 		-e 's/#(sasl_mech_list: PLAIN)/\1/' \
@@ -74,7 +77,9 @@ RUN postconf -e myorigin=/etc/mailname && \
 	sed -i -r \
 		-e 's/^START=no/START=yes/' \
 		-e 's/^MECHANISMS=".+"/MECHANISMS="sasldb"/' /etc/default/saslauthd && \
-	/root/cyrususers.sh
+	/root/cyrususers.sh && \
+	touch /var/lib/cyrus/tls_sessions.db && \
+	chown cyrus:mail /var/lib/cyrus/tls_sessions.db
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod 755 /usr/local/bin/entrypoint.sh
