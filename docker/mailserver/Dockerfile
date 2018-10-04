@@ -12,14 +12,15 @@ ARG SENDERCANONICAL=user@server.com
 ENV USERNAME=${USERNAME}
 ENV PASSWORD=${PASSWORD}
 ENV MAILNAME=${MAILNAME}
-ENV $FETCHMAILHOME=/root
+ENV FETCHMAILHOME=/root
+ENV FETCHMAILUSER=root
 
 COPY etc/aliases /etc/aliases
 COPY root/fetchmailrc /root/fetchmailrc
 RUN chmod 600 /root/fetchmailrc
 COPY etc/postfix/sasl_password /etc/postfix/sasl_password
-COPY cyrususers /root/cyrususers
-COPY cyrususers.sh /root/cyrususers.sh
+COPY root/cyrususers /root/cyrususers
+COPY root/cyrususers.sh /root/cyrususers.sh
 RUN chmod 755 /root/cyrususers.sh
 
 RUN apt-get update && \
