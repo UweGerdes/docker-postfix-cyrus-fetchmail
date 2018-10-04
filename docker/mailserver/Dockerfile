@@ -15,6 +15,8 @@ ENV MAILNAME=${MAILNAME}
 ENV FETCHMAILHOME=/root
 ENV FETCHMAILUSER=root
 
+COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+RUN chmod 755 /usr/local/bin/entrypoint.sh
 COPY etc/aliases /etc/aliases
 COPY etc/postfix/sasl_password /etc/postfix/sasl_password
 COPY opt/postfix.sh /opt/postfix.sh
@@ -39,10 +41,8 @@ RUN apt-get update && \
 		sasl2-bin && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
-	adduser postfix mail
-
-
-RUN echo "${MAILNAME}" > /etc/mailname && \
+	adduser postfix mail && \
+	echo "${MAILNAME}" > /etc/mailname && \
 	newaliases && \
 	chmod 600 /etc/postfix/sasl_password && \
 	postmap /etc/postfix/sasl_password && \
@@ -81,8 +81,6 @@ RUN postconf -e myorigin=/etc/mailname && \
 	touch /var/lib/cyrus/tls_sessions.db && \
 	chown cyrus:mail /var/lib/cyrus/tls_sessions.db
 
-COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod 755 /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 EXPOSE 25/tcp 110/tcp 143/tcp 465/tcp 587/tcp
