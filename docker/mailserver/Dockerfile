@@ -19,8 +19,7 @@ COPY cyrususers /root/cyrususers
 COPY cyrususers.sh /root/cyrususers.sh
 RUN chmod 755 /root/cyrususers.sh
 
-RUN echo "root:${USERNAME}" >> /etc/aliases && \
-	apt-get update && \
+RUN apt-get update && \
 	apt-get install -y \
 					cyrus-admin \
 					cyrus-clients \

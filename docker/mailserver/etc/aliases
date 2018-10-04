@@ -12,3 +12,5 @@ abuse: root
 noc: root
 security: root
 postfix: root
+root: mailbox
+mailbox: uweimap, mailbackup
