@@ -15,9 +15,9 @@ ENV MAILNAME=${MAILNAME}
 
 COPY etc/aliases /etc/aliases
 COPY etc/postfix/sasl_password /etc/postfix/sasl_password
-COPY cyrususers /home/cyrus/cyrususers
-COPY cyrususers.sh /home/cyrus/cyrususers.sh
-RUN chmod 755 /home/cyrus/cyrususers.sh
+COPY cyrususers /root/cyrususers
+COPY cyrususers.sh /root/cyrususers.sh
+RUN chmod 755 /root/cyrususers.sh
 
 RUN echo "root:${USERNAME}" >> /etc/aliases && \
 	apt-get update && \
@@ -30,9 +30,11 @@ RUN echo "root:${USERNAME}" >> /etc/aliases && \
 					fetchmail \
 					libsasl2-modules \
 					postfix \
-					sasl2-bin && \
-	apt-get clean && \
-	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+					sasl2-bin
+
+#					 && \
+#	apt-get clean && \
+#	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN echo "${MAILNAME}" > /etc/mailname && \
 	newaliases && \
@@ -54,20 +56,19 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e sender_canonical_maps=hash:/etc/postfix/sender_canonical && \
 	postconf -F 'smtp/inet/chroot = n' && \
 	postconf -F 'lmtp/*/chroot = n' && \
-	cp -rp /var/spool/postfix /var/spool/postfix.init && \
-	sed -i -E 's/#(munge8bit: no)/\1/' /etc/imapd.conf && \
-	sed -i -E 's/#(admins: cyrus)/\1/' /etc/imapd.conf && \
-	sed -i -E 's/#(sasl_mech_list: PLAIN)/\1/' /etc/imapd.conf && \
-	sed -i -E 's/^sasl_pwcheck_method: auxprop/sasl_pwcheck_method: saslauthd/' /etc/imapd.conf && \
-	sed -i -E 's/^START=no/START=yes/' /etc/default/saslauthd && \
-	sed -i -E 's/^MECHANISMS=".+"/MECHANISMS="sasldb"/' /etc/default/saslauthd && \
-	/home/cyrus/cyrususers.sh
+	cp -rp /var/spool/postfix /var/spool/postfix.init \
+	sed -i -e 's/#(munge8bit: no)/\1/' \
+			-e 's/#(admins: cyrus)/\1/' \
+			-e 's/#(sasl_mech_list: PLAIN)/\1/' \
+			-e 's/^sasl_pwcheck_method: auxprop/sasl_pwcheck_method: saslauthd/' /etc/imapd.conf && \
+	sed -i -e 's/^START=no/START=yes/' \
+			-e 's/^MECHANISMS=".+"/MECHANISMS="sasldb"/' /etc/default/saslauthd && \
+	/root/cyrususers.sh
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod 755 /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-EXPOSE 25/tcp
-#EXPOSE 110/tcp 143/tcp 465/tcp 587/tcp
+EXPOSE 25/tcp 110/tcp 143/tcp 465/tcp 587/tcp
 
 CMD ["postfix","start-fg"]
