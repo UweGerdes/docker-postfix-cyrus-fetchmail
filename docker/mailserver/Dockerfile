@@ -3,15 +3,10 @@
 FROM uwegerdes/baseimage
 MAINTAINER Uwe Gerdes <entwicklung@uwegerdes.de>
 
-ARG USERNAME='mailbox'
-ARG PASSWORD='mailpass'
-ARG MAILNAME='hostname'
 ARG SMTPSERVER=smtp.server.com
 ARG SENDERCANONICAL=user@server.com
 
-ENV USERNAME=${USERNAME}
-ENV PASSWORD=${PASSWORD}
-ENV MAILNAME=${MAILNAME}
+ENV MAILNAME=mailserver
 ENV FETCHMAILHOME=/root
 ENV FETCHMAILUSER=root
 
@@ -77,7 +72,6 @@ RUN postconf -e myorigin=/etc/mailname && \
 	sed -i -r \
 		-e 's/^START=no/START=yes/' \
 		-e 's/^MECHANISMS=".+"/MECHANISMS="sasldb"/' /etc/default/saslauthd && \
-	/root/cyrususers.sh && \
 	touch /var/lib/cyrus/tls_sessions.db && \
 	chown cyrus:mail /var/lib/cyrus/tls_sessions.db
 
