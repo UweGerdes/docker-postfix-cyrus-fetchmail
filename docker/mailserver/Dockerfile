@@ -14,6 +14,8 @@ ENV PASSWORD=${PASSWORD}
 ENV MAILNAME=${MAILNAME}
 
 COPY etc/aliases /etc/aliases
+COPY etc/fetchmail /etc/fetchmail
+RUN chmod 600 /etc/fetchmail
 COPY etc/postfix/sasl_password /etc/postfix/sasl_password
 COPY cyrususers /root/cyrususers
 COPY cyrususers.sh /root/cyrususers.sh
