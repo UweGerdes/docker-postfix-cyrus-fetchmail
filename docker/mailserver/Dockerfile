@@ -39,17 +39,18 @@ RUN apt-get update && \
 		rsyslog \
 		sasl2-bin \
 		supervisor && \
+	apt-get clean && \
+	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
 	adduser postfix mail
 
-#	apt-get clean && \
-#	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
 RUN echo "${MAILNAME}" > /etc/mailname && \
 	newaliases && \
 	chmod 600 /etc/postfix/sasl_password && \
 	postmap /etc/postfix/sasl_password && \
 	echo "root ${SENDERCANONICAL}" > /etc/postfix/sender_canonical && \
-	postmap /etc/postfix/sender_canonical
+	postmap /etc/postfix/sender_canonical && \
+	cp -rp /var/spool/postfix /var/spool/postfix.init
 
 RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e myhostname=$MAILNAME && \
@@ -65,7 +66,6 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e mailbox_transport=lmtp:unix:/var/run/cyrus/socket/lmtp && \
 	postconf -F 'smtp/inet/chroot = n' && \
 	postconf -F 'lmtp/unix/chroot = n' && \
-	cp -rp /var/spool/postfix /var/spool/postfix.init && \
 	sed -i -r \
 		-e 's/(\s)(nntp\s)/\1#\2/' \
 		-e 's/(\s)(http\s)/\1#\2/' /etc/cyrus.conf && \
@@ -85,7 +85,6 @@ COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod 755 /usr/local/bin/entrypoint.sh
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-EXPOSE 25/tcp
-#EXPOSE 110/tcp 143/tcp 465/tcp 587/tcp
+EXPOSE 25/tcp 110/tcp 143/tcp 465/tcp 587/tcp
 
-CMD ["/usr/bin/supervisord","-c","/etc/supervisor/supervisord.conf"]
+CMD ["bash"]
