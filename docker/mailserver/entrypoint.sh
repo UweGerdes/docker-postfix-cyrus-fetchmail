@@ -19,6 +19,6 @@ rm -f /run/rsyslogd.pid
 service rsyslog start
 service saslauthd start
 service postfix start
-service cyrus-imapd start
+service cyrus-imapd restart
 
 exec "$@"
