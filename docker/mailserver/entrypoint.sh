@@ -18,7 +18,7 @@ if [ -z "$(sasldblistusers2)" ]; then
 		echo "saslpasswd2 create $user"
 		echo "$pass" | saslpasswd2 -p -u ${MAILNAME} -c $user
 		if [ $user != "cyrus" ]; then
-			echo "cm user.$user" | cyradm --user cyrus -w cyrpasswd --server mailserver
+			echo "cm user.$user" | cyradm --user cyrus -w cyrpasswd --server mailserver > /dev/null
 		fi
 	done < "/root/cyrususers"
 	sasldblistusers2
