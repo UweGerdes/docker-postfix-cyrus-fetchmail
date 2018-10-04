@@ -15,7 +15,7 @@ fi
 
 postfix set-permissions >/dev/null 2>&1
 
-rm /run/rsyslogd.pid
+rm -f /run/rsyslogd.pid
 service rsyslog start
 service saslauthd start
 service postfix start
