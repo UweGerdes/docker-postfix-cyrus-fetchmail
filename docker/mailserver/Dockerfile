@@ -75,6 +75,8 @@ RUN postconf -e myorigin=/etc/mailname && \
 		-e 's/#(sasl_mech_list: PLAIN)/\1/' \
 		-e 's/^sasl_pwcheck_method: auxprop/sasl_pwcheck_method: saslauthd/' /etc/imapd.conf && \
 	sed -i -r \
+		-e 's/^(module\(load="imklog")/#\1/' /etc/rsyslog.conf && \
+	sed -i -r \
 		-e 's/^START=no/START=yes/' \
 		-e 's/^MECHANISMS=".+"/MECHANISMS="sasldb"/' /etc/default/saslauthd && \
 	/root/cyrususers.sh && \
