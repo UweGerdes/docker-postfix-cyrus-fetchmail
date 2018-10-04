@@ -6,6 +6,6 @@ if [ -n "$(find "/var/spool/postfix/" -maxdepth 0 -type d -empty 2>/dev/null)" ]
 fi
 
 echo "postfix set-permissions"
-postfix set-permissions
+postfix set-permissions >/dev/null 2>&1
 
 exec "$@"
