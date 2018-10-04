@@ -1,0 +1,8 @@
+set no bouncemail
+set no spambounce
+set properties ""
+
+poll pop.mailserver.com with proto POP3
+	bad-header accept
+	auth password
+	user "user@server.de" pass "mailpass" ssl is mailbox here
