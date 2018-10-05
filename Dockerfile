@@ -22,7 +22,6 @@ COPY usr/lib/sasl2/smtpd.conf /usr/lib/sasl2/smtpd.conf
 RUN chmod 600 /etc/postfix/sasl_password && \
 	chmod 600 /root/cyrususers && \
 	chmod 755 /usr/local/bin/entrypoint.sh && \
-	chown fetchmail:nogroup /var/lib/fetchmail/fetchmailrc && \
 	chmod 600 /var/lib/fetchmail/fetchmailrc && \
 	touch /var/log/fetchmail.log && \
 	chmod 666 /var/log/fetchmail.log && \
@@ -53,6 +52,7 @@ RUN apt-get update && \
 	echo "root ${SENDERCANONICAL}" > /etc/postfix/sender_canonical && \
 	postmap /etc/postfix/sender_canonical && \
 	cp -rp /var/spool/postfix /var/spool/postfix.init && \
+	chown fetchmail:nogroup /var/lib/fetchmail/fetchmailrc && \
 	echo "4-59/5 * * * * fetchmail /var/lib/fetchmail/fetchstart.sh" >> /etc/crontab
 
 RUN postconf -e myorigin=/etc/mailname && \
