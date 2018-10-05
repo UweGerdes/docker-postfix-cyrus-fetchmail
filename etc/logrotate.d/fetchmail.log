@@ -1,0 +1,9 @@
+/var/log/fetchmail.log {
+       daily
+       rotate 7
+       delaycompress
+       compress
+       notifempty
+       missingok
+       create 666 root root
+}

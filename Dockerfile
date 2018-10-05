@@ -13,6 +13,7 @@ ENV FETCHMAILUSER=root
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod 755 /usr/local/bin/entrypoint.sh
 COPY etc/aliases /etc/aliases
+COPY etc/logrotate.d/fetchmail.log /etc/logrotate.d/fetchmail.log
 COPY etc/postfix/sasl_password /etc/postfix/sasl_password
 COPY root/cyrususers /root/cyrususers
 RUN chmod 600 /root/cyrususers
@@ -46,7 +47,7 @@ RUN apt-get update && \
 	echo "root ${SENDERCANONICAL}" > /etc/postfix/sender_canonical && \
 	postmap /etc/postfix/sender_canonical && \
 	cp -rp /var/spool/postfix /var/spool/postfix.init && \
-	echo "*/5 * * * * root /usr/bin/fetchmail -v >> /var/log/fetchlog" >> /etc/crontab
+	echo "*/5 * * * * root /usr/bin/fetchmail -f /root/fetchmailrc -v >> /var/log/fetchmail.log" >> /etc/crontab
 
 RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e myhostname=$MAILNAME && \
