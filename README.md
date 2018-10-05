@@ -1,5 +1,11 @@
 # Docker uwegerdes/mailserver
 
+## Edit files
+
+Copy the `*.sample` files to files without the `.sample` extension and edit them to your needs. You should `chmod 600` the copies because they contain passwords.
+
+Check other files and perhaps add some settings.
+
 ## Build
 
 Build the image with (mind the dot):
