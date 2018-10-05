@@ -14,8 +14,6 @@ COPY entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod 755 /usr/local/bin/entrypoint.sh
 COPY etc/aliases /etc/aliases
 COPY etc/postfix/sasl_password /etc/postfix/sasl_password
-COPY opt/postfix.sh /opt/postfix.sh
-RUN chmod 755 /opt/postfix.sh
 COPY root/cyrususers /root/cyrususers
 RUN chmod 600 /root/cyrususers
 COPY root/fetchmailrc /root/fetchmailrc
