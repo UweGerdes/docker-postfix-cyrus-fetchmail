@@ -29,6 +29,7 @@ $ docker run -it \
 	-p 25:25 \
 	-p 110:110 \
 	-p 143:143 \
+	-p 993:993 \
 	--volume /srv/docker/postfix:/var/spool/postfix \
 	uwegerdes/mailserver \
 	bash

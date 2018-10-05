@@ -63,10 +63,11 @@ RUN postconf -e myorigin=/etc/mailname && \
 		-e 's/(\s)(http\s)/\1#\2/' \
 		-e 's/(\s)(sieve\s)/\1#\2/' /etc/cyrus.conf && \
 	sed -i -r \
-		-e 's/#(munge8bit: no)/\1/' \
 		-e 's/#(admins: cyrus)/\1/' \
 		-e 's/#(sasl_mech_list: PLAIN)/\1/' \
-		-e 's/^sasl_pwcheck_method: auxprop/sasl_pwcheck_method: saslauthd/' /etc/imapd.conf && \
+		-e 's/^sasl_pwcheck_method: auxprop/sasl_pwcheck_method: saslauthd/' \
+		-e 's/#(tls_server_cert:)/\1/' \
+		-e 's/#(tls_server_key:)/\1/' /etc/imapd.conf && \
 	sed -i -r \
 		-e 's/^(module\(load="imklog")/#\1/' /etc/rsyslog.conf && \
 	sed -i -r \
@@ -77,6 +78,6 @@ RUN postconf -e myorigin=/etc/mailname && \
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-EXPOSE 25/tcp 110/tcp 143/tcp 465/tcp 587/tcp
+EXPOSE 25/tcp 110/tcp 143/tcp 465/tcp 587/tcp 993/tcp
 
 CMD ["bash"]
