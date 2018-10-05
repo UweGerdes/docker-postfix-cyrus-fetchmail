@@ -19,7 +19,7 @@ if [ -z "$(sasldblistusers2)" ]; then
 		echo "$pass" | saslpasswd2 -p -u ${MAILNAME} -c $user
 		if [ $user != "cyrus" -a ! -d "/var/spool/cyrus/mail/${user:0:1}/user/${user}" ]; then
 			echo "create mailbox for $user"
-			echo "cm user.mailbox" | cyradm --user cyrus -w cyrpasswd --server mailserver > /dev/null
+			echo "cm user.${user}" | cyradm --user cyrus -w cyrpasswd --server mailserver > /dev/null
 		fi
 	done < "/root/cyrususers"
 fi
