@@ -26,7 +26,9 @@ Run the mailserver container with:
 $ docker run -it \
 	--name mailserver \
 	--hostname mailserver \
-	-p 50025:25 \
+	-p 25:25 \
+	-p 110:110 \
+	-p 143:143 \
 	--volume /srv/docker/postfix:/var/spool/postfix \
 	uwegerdes/mailserver \
 	bash
