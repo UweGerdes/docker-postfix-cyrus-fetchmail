@@ -36,13 +36,15 @@ RUN apt-get update && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
 	adduser cyrus ssl-cert && \
 	adduser postfix mail && \
+	adduser postfix sasl && \
 	echo "${MAILNAME}" > /etc/mailname && \
 	newaliases && \
 	chmod 600 /etc/postfix/sasl_password && \
 	postmap /etc/postfix/sasl_password && \
 	echo "root ${SENDERCANONICAL}" > /etc/postfix/sender_canonical && \
 	postmap /etc/postfix/sender_canonical && \
-	cp -rp /var/spool/postfix /var/spool/postfix.init
+	cp -rp /var/spool/postfix /var/spool/postfix.init && \
+	echo "*/5 * * * * root /usr/bin/fetchmail -v >> /var/log/fetchlog" >> /etc/crontab
 
 RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e myhostname=$MAILNAME && \
