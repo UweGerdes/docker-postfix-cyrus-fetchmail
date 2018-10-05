@@ -30,6 +30,7 @@ RUN apt-get update && \
 		cyrus-pop3d \
 		fetchmail \
 		libsasl2-modules \
+		logrotate \
 		postfix \
 		rsyslog \
 		sasl2-bin && \
