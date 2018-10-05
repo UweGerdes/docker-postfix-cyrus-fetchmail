@@ -15,15 +15,15 @@ COPY etc/aliases /etc/aliases
 COPY etc/logrotate.d/fetchmail.log /etc/logrotate.d/fetchmail.log
 COPY etc/postfix/sasl_password /etc/postfix/sasl_password
 COPY root/cyrususers /root/cyrususers
-COPY var/lib/fetchmailrc /var/lib/fetchmailrc
+COPY var/lib/fetchmail/fetchmailrc /var/lib/fetchmail/fetchmailrc
 COPY var/lib/fetchstart.sh /var/lib/fetchstart.sh
 COPY usr/lib/sasl2/smtpd.conf /usr/lib/sasl2/smtpd.conf
 
 RUN chmod 600 /etc/postfix/sasl_password && \
 	chmod 600 /root/cyrususers && \
 	chmod 755 /usr/local/bin/entrypoint.sh && \
-	chown fetchmail:nogroup /var/lib/fetchmailrc && \
-	chmod 600 /var/lib/fetchmailrc && \
+	chown fetchmail:nogroup /var/lib/fetchmail/fetchmailrc && \
+	chmod 600 /var/lib/fetchmail/fetchmailrc && \
 	touch /var/log/fetchmail.log && \
 	chmod 666 /var/log/fetchmail.log && \
 	chmod 755 /var/lib/fetchstart.sh
