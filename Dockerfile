@@ -33,6 +33,7 @@ RUN apt-get update && \
 		sasl2-bin && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+	adduser cyrus ssl-cert && \
 	adduser postfix mail && \
 	echo "${MAILNAME}" > /etc/mailname && \
 	newaliases && \
@@ -57,6 +58,7 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -F 'smtp/inet/chroot = n' && \
 	postconf -F 'lmtp/unix/chroot = n' && \
 	sed -i -r \
+		-e 's/(\s)#(imaps\s+cmd="imapd -s -U 30")/\1\2/' \
 		-e 's/(\s)(nntp\s)/\1#\2/' \
 		-e 's/(\s)(http\s)/\1#\2/' \
 		-e 's/(\s)(sieve\s)/\1#\2/' /etc/cyrus.conf && \
