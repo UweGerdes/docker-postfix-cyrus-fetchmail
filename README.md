@@ -35,3 +35,7 @@ $ docker run -it \
 ## Configuration
 
 This installation delivers mail to the users listed in etc/aliases. You can also put .foward files in home directories. To use other distribution methods (LDAP, MySQL...) make your own docker and tell me. ;-)
+
+## Logs
+
+Postfix and Cyrus log to `/var/log/mail.log` and `/var/log/mail.err`.

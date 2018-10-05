@@ -58,7 +58,8 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -F 'lmtp/unix/chroot = n' && \
 	sed -i -r \
 		-e 's/(\s)(nntp\s)/\1#\2/' \
-		-e 's/(\s)(http\s)/\1#\2/' /etc/cyrus.conf && \
+		-e 's/(\s)(http\s)/\1#\2/' \
+		-e 's/(\s)(sieve\s)/\1#\2/' /etc/cyrus.conf && \
 	sed -i -r \
 		-e 's/#(munge8bit: no)/\1/' \
 		-e 's/#(admins: cyrus)/\1/' \
