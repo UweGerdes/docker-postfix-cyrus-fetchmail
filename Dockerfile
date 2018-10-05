@@ -16,7 +16,7 @@ COPY etc/logrotate.d/fetchmail.log /etc/logrotate.d/fetchmail.log
 COPY etc/postfix/sasl_password /etc/postfix/sasl_password
 COPY root/cyrususers /root/cyrususers
 COPY var/lib/fetchmail/fetchmailrc /var/lib/fetchmail/fetchmailrc
-COPY var/lib/fetchstart.sh /var/lib/fetchstart.sh
+COPY var/lib/fetchmail/fetchstart.sh /var/lib/fetchmail/fetchstart.sh
 COPY usr/lib/sasl2/smtpd.conf /usr/lib/sasl2/smtpd.conf
 
 RUN chmod 600 /etc/postfix/sasl_password && \
@@ -26,7 +26,7 @@ RUN chmod 600 /etc/postfix/sasl_password && \
 	chmod 600 /var/lib/fetchmail/fetchmailrc && \
 	touch /var/log/fetchmail.log && \
 	chmod 666 /var/log/fetchmail.log && \
-	chmod 755 /var/lib/fetchstart.sh
+	chmod 755 /var/lib/fetchmail/fetchstart.sh
 
 RUN apt-get update && \
 	apt-get install -y \
@@ -53,7 +53,7 @@ RUN apt-get update && \
 	echo "root ${SENDERCANONICAL}" > /etc/postfix/sender_canonical && \
 	postmap /etc/postfix/sender_canonical && \
 	cp -rp /var/spool/postfix /var/spool/postfix.init && \
-	echo "4-59/5 * * * * fetchmail /var/lib/fetchstart.sh" >> /etc/crontab
+	echo "4-59/5 * * * * fetchmail /var/lib/fetchmail/fetchstart.sh" >> /etc/crontab
 
 RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e myhostname=$MAILNAME && \
