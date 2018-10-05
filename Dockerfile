@@ -47,7 +47,7 @@ RUN apt-get update && \
 	echo "root ${SENDERCANONICAL}" > /etc/postfix/sender_canonical && \
 	postmap /etc/postfix/sender_canonical && \
 	cp -rp /var/spool/postfix /var/spool/postfix.init && \
-	echo "*/5 * * * * root /usr/bin/fetchmail -f /root/fetchmailrc -v >> /var/log/fetchmail.log" >> /etc/crontab
+	echo "*/5 * * * * root /usr/bin/fetchmail -f /root/fetchmailrc >> /var/log/fetchmail.log" >> /etc/crontab
 
 RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e myhostname=$MAILNAME && \
