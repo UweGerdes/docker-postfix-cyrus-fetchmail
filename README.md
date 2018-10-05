@@ -20,15 +20,20 @@ $ docker build \
 
 ## Usage
 
+Check for other MTA on your server - they should not use the ports listed below: `sudo netstat -tulpen`. Perhaps you should `sudo dpkg-reconfigure exim4-config` to listen on local address 127.0.0.2 (which will not interfere with localhost).
+
 Run the mailserver container with:
 
 ```bash
 $ docker run -it \
 	--name mailserver \
 	--hostname mailserver \
-	-p 25:25 \
+	-p 50025:25 \
 	-p 110:110 \
 	-p 143:143 \
+	-p 465:465 \
+	-p 587:587 \
+	-p 993:993 \
 	--volume /srv/docker/postfix:/var/spool/postfix \
 	uwegerdes/mailserver \
 	bash

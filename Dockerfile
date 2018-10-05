@@ -67,7 +67,12 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e smtpd_sasl_auth_enable=yes && \
 	postconf -e smtpd_sasl_security_options=noanonymous && \
 	postconf -e smtpd_recipient_restrictions="permit_sasl_authenticated, reject_unauth_destination" && \
+	sed -i -r \
+		-e 's/^#(smtps\s+inet.+smtpd)$/\1/' \
+		-e 's/^#(submission\s+inet.+smtpd)$/\1/' /etc/postfix/master.cf && \
 	postconf -F 'smtp/inet/chroot = n' && \
+	postconf -F 'smtps/inet/chroot = n' && \
+	postconf -F 'submission/inet/chroot = n' && \
 	postconf -F 'lmtp/unix/chroot = n' && \
 	sed -i -r \
 		-e 's/(\s)#(imaps\s+cmd="imapd -s -U 30")/\1\2/' \
@@ -90,6 +95,6 @@ RUN postconf -e myorigin=/etc/mailname && \
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-EXPOSE 25/tcp 110/tcp 143/tcp 465/tcp 587/tcp
+EXPOSE 25/tcp 110/tcp 143/tcp 465/tcp 587/tcp 993/tcp
 
 CMD ["bash"]
