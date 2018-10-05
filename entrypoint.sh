@@ -8,8 +8,9 @@ fi
 postfix set-permissions >/dev/null 2>&1
 
 rm -f /run/rsyslogd.pid
-service cron start
 service rsyslog start
+service cron start
+service ssh start
 service saslauthd start
 service postfix start
 service cyrus-imapd restart
