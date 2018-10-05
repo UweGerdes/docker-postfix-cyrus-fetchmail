@@ -1,41 +1,31 @@
-# Raspberry Pi Home Server with Dockers
+# Docker uwegerdes/mailserver
 
-Setup a Raspberry Pi 3 as home server with some apps for me
+## Build
 
-## Setup Hardware
-
-Install Raspbian, make updates, configure for ssh, cam, etc., rpi-update (firmware)...
-
-sudo apt-get install xrdp
-
-## Install Docker
-
-Start with uwegerdes/docker-baseimage-arm32v7 - installation of Docker is documented there.
-
-## Build and install docker-compose
-
-https://www.berthon.eu/2017/getting-docker-compose-on-raspberry-pi-arm-the-easy-way/
+Build the image with (mind the dot):
 
 ```bash
-$ git clone https://github.com/docker/compose.git
-$ cd compose/
-$ git checkout release
-$ docker build -t docker-compose:armhf -f Dockerfile.armhf .
-$ docker run --rm --entrypoint="script/build/linux-entrypoint" -v $(pwd)/dist:/code/dist -v $(pwd)/.git:/code/.git "docker-compose:armhf"
+$ docker build \
+	-t uwegerdes/mailserver \
+	--build-arg SMTPSERVER=smtp.server.com \
+	--build-arg SENDERCANONICAL=user@server.com \
+	.
 ```
 
-You get a file `dist/docker-compose-Linux-armv7l` - copy it to /usr/local/bin/docker-compose and try `docker-compose --version`.
+## Usage
 
-## Docker mail server
+Run the mailserver container with:
 
-### Postfix
+```bash
+$ docker run -it \
+	--name mailserver \
+	--hostname mailserver \
+	-p 25:25 \
+	--volume /srv/docker/postfix:/var/spool/postfix \
+	uwegerdes/mailserver \
+	bash
+```
 
-More info in `docker/postfix/README.md`.
+## Configuration
 
-## Docker nodejs
-
-Build `uwegerdes/docker-nodejs`.
-
-## Docker frontend-development
-
-See my git `uwegerdes/frontend-development`.
+This installation delivers mail to the users listed in etc/aliases. You can also put .foward files in home directories. To use other distribution methods (LDAP, MySQL...) make your own docker and tell me. ;-)
