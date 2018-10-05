@@ -18,6 +18,7 @@ COPY root/cyrususers /root/cyrususers
 RUN chmod 600 /root/cyrususers
 COPY root/fetchmailrc /root/fetchmailrc
 RUN chmod 600 /root/fetchmailrc
+COPY usr/lib/sasl2/smtpd.conf /usr/lib/sasl2/smtpd.conf
 
 RUN apt-get update && \
 	apt-get install -y \
@@ -55,6 +56,9 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e smtp_sasl_password_maps=hash:/etc/postfix/sasl_password && \
 	postconf -e sender_canonical_maps=hash:/etc/postfix/sender_canonical && \
 	postconf -e mailbox_transport=lmtp:unix:/var/run/cyrus/socket/lmtp && \
+	postconf -e smtpd_sasl_path=smtpd && \
+	postconf -e smtpd_sasl_auth_enable=yes && \
+	postconf -e smtpd_sasl_security_options=noanonymous && \
 	postconf -F 'smtp/inet/chroot = n' && \
 	postconf -F 'lmtp/unix/chroot = n' && \
 	sed -i -r \
@@ -78,6 +82,6 @@ RUN postconf -e myorigin=/etc/mailname && \
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-EXPOSE 25/tcp 110/tcp 143/tcp 465/tcp 587/tcp 993/tcp
+EXPOSE 25/tcp 110/tcp 143/tcp 465/tcp 587/tcp
 
 CMD ["bash"]
