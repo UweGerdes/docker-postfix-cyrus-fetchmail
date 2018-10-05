@@ -59,6 +59,7 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e smtpd_sasl_path=smtpd && \
 	postconf -e smtpd_sasl_auth_enable=yes && \
 	postconf -e smtpd_sasl_security_options=noanonymous && \
+	postconf -e smtpd_recipient_restrictions="permit_sasl_authenticated, check_relay_domains" && \
 	postconf -F 'smtp/inet/chroot = n' && \
 	postconf -F 'lmtp/unix/chroot = n' && \
 	sed -i -r \
