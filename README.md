@@ -28,6 +28,7 @@ Run the mailserver container with:
 $ docker run -it \
 	--name mailserver \
 	--hostname mailserver \
+	-p 50022:22 \
 	-p 50025:25 \
 	-p 110:110 \
 	-p 143:143 \
@@ -42,6 +43,16 @@ $ docker run -it \
 ## Configuration
 
 This installation delivers mail to the users listed in etc/aliases. You can also put .foward files in home directories. To use other distribution methods (LDAP, MySQL...) make your own docker and tell me. ;-)
+
+## Cyrus mails
+
+Give user cyrus a password and try to connect from another computer in your network:
+
+```bash
+$ ssh -p 50022 cyrus@mailserver
+```
+
+Accept the key. You may want to rsync the contents of mail.
 
 ## Logs
 

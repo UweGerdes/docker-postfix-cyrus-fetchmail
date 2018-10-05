@@ -99,6 +99,6 @@ RUN postconf -e myorigin=/etc/mailname && \
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-EXPOSE 25/tcp 110/tcp 143/tcp 465/tcp 587/tcp 993/tcp
+EXPOSE 22/tcp 25/tcp 110/tcp 143/tcp 465/tcp 587/tcp 993/tcp
 
 CMD ["bash"]

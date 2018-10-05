@@ -18,7 +18,7 @@ else
 	if [ -z "`/usr/bin/pgrep fetchmail`" ] ; then
 		echo ", fetchmail starting." >> ${LOGFILE}
 		echo "${DATE} ${HOSTNAME} ${MYNAME} starting" >> /var/log/fetchmail.log
-		/usr/bin/fetchmail -f /var/lib/fetchmailrc --timeout 30 >> /var/log/fetchmail.log 2>&1
+		/usr/bin/fetchmail -f /var/lib/fetchmail/fetchmailrc --timeout 30 >> /var/log/fetchmail.log 2>&1
 	else
 		echo ", fetchmail running, PID is `/usr/bin/pgrep fetchmail` - quit." >> ${LOGFILE}
 	fi
