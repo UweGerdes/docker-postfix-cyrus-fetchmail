@@ -19,6 +19,8 @@ COPY root/cyrususers /root/cyrususers
 RUN chmod 600 /root/cyrususers
 COPY root/fetchmailrc /root/fetchmailrc
 RUN chmod 600 /root/fetchmailrc
+COPY root/fetchstart.sh /root/fetchstart.sh
+RUN chmod 755 /root/fetchstart.sh
 COPY usr/lib/sasl2/smtpd.conf /usr/lib/sasl2/smtpd.conf
 
 RUN apt-get update && \
@@ -47,7 +49,7 @@ RUN apt-get update && \
 	echo "root ${SENDERCANONICAL}" > /etc/postfix/sender_canonical && \
 	postmap /etc/postfix/sender_canonical && \
 	cp -rp /var/spool/postfix /var/spool/postfix.init && \
-	echo "*/5 * * * * root /usr/bin/fetchmail -f /root/fetchmailrc >> /var/log/fetchmail.log" >> /etc/crontab
+	echo "4-59/5 * * * * root /root/fetchstart.sh" >> /etc/crontab
 
 RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e myhostname=$MAILNAME && \
