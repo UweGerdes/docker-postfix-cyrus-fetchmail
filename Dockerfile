@@ -11,17 +11,22 @@ ENV FETCHMAILHOME=/root
 ENV FETCHMAILUSER=root
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod 755 /usr/local/bin/entrypoint.sh
 COPY etc/aliases /etc/aliases
 COPY etc/logrotate.d/fetchmail.log /etc/logrotate.d/fetchmail.log
 COPY etc/postfix/sasl_password /etc/postfix/sasl_password
 COPY root/cyrususers /root/cyrususers
-RUN chmod 600 /root/cyrususers
-COPY root/fetchmailrc /root/fetchmailrc
-RUN chmod 600 /root/fetchmailrc
-COPY root/fetchstart.sh /root/fetchstart.sh
-RUN chmod 755 /root/fetchstart.sh
+COPY var/lib/fetchmailrc /var/lib/fetchmailrc
+COPY var/lib/fetchstart.sh /var/lib/fetchstart.sh
 COPY usr/lib/sasl2/smtpd.conf /usr/lib/sasl2/smtpd.conf
+
+RUN chmod 600 /etc/postfix/sasl_password && \
+	chmod 600 /root/cyrususers && \
+	chmod 755 /usr/local/bin/entrypoint.sh && \
+	chown fetchmail:nogroup /var/lib/fetchmailrc && \
+	chmod 600 /var/lib/fetchmailrc && \
+	touch /var/log/fetchmail.log && \
+	chmod 666 /var/log/fetchmail.log && \
+	chmod 755 /var/lib/fetchstart.sh
 
 RUN apt-get update && \
 	apt-get install -y \
@@ -44,12 +49,11 @@ RUN apt-get update && \
 	adduser postfix sasl && \
 	echo "${MAILNAME}" > /etc/mailname && \
 	newaliases && \
-	chmod 600 /etc/postfix/sasl_password && \
 	postmap /etc/postfix/sasl_password && \
 	echo "root ${SENDERCANONICAL}" > /etc/postfix/sender_canonical && \
 	postmap /etc/postfix/sender_canonical && \
 	cp -rp /var/spool/postfix /var/spool/postfix.init && \
-	echo "4-59/5 * * * * root /root/fetchstart.sh" >> /etc/crontab
+	echo "4-59/5 * * * * fetchmail /var/lib/fetchstart.sh" >> /etc/crontab
 
 RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e myhostname=$MAILNAME && \
