@@ -22,6 +22,7 @@ COPY usr/lib/sasl2/smtpd.conf /usr/lib/sasl2/smtpd.conf
 
 RUN apt-get update && \
 	apt-get install -y \
+		cron \
 		cyrus-admin \
 		cyrus-clients \
 		cyrus-common \
