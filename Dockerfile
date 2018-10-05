@@ -44,6 +44,7 @@ RUN apt-get update && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
 	adduser cyrus ssl-cert && \
+	usermod --shell /bin/bash cyrus && \
 	adduser postfix mail && \
 	adduser postfix sasl && \
 	echo "${MAILNAME}" > /etc/mailname && \
