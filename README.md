@@ -44,7 +44,7 @@ $ docker run -it \
 
 This installation delivers mail to the users listed in etc/aliases. You can also put .foward files in home directories. To use other distribution methods (LDAP, MySQL...) make your own docker and tell me. ;-)
 
-To use TLS with keys that survive recreation of the image copy some ssl-cert-snakeoil.pem and ssl-cert-snakeoil.key from a container and put them in subdirectories in `etc/ssl` - and restrict access. Please keep in mind that the keys depend on the container hostname.
+To use TLS with keys that survive recreation of the image please create the ssl-cert in the running container (hostname is set) and copy ssl-cert-snakeoil.pem and ssl-cert-snakeoil.key from a container to the host and put them in subdirectories in `etc/ssl` - and restrict access. Please keep in mind that the keys depend on the container hostname.
 
 
 ## Cyrus mail backup and restore

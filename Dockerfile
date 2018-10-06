@@ -60,7 +60,7 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e myhostname=$MAILNAME && \
 	postconf -e mydestination="$MAILNAME, $MAILNAME.localdomain, localhost.localdomain, localhost" && \
 	postconf -e relayhost=$SMTPSERVER && \
-	postconf -e mynetworks=0.0.0.0/0 && \
+	postconf -e mynetworks=127.0.0.0/8 172.0.0.0/8 && \
 	postconf -e message_size_limit=30720000 && \
 	postconf -e inet_protocols=ipv4 && \
 	postconf -e smtp_sasl_auth_enable=yes && \
@@ -72,7 +72,7 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e smtpd_sasl_auth_enable=yes && \
 	postconf -e smtpd_sasl_security_options=noanonymous && \
 	postconf -e broken_sasl_auth_clients=yes && \
-	postconf -e smtpd_recipient_restrictions="permit_sasl_authenticated, reject_unauth_destination" && \
+	postconf -e smtpd_recipient_restrictions="permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination" && \
 	postconf -e smtpd_enforce_tls=yes && \
 	postconf -e smtpd_tls_security_level=encrypt && \
 	sed -i -r \
