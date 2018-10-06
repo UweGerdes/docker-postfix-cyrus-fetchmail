@@ -71,7 +71,10 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e smtpd_sasl_path=smtpd && \
 	postconf -e smtpd_sasl_auth_enable=yes && \
 	postconf -e smtpd_sasl_security_options=noanonymous && \
+	postconf -e broken_sasl_auth_clients=yes && \
 	postconf -e smtpd_recipient_restrictions="permit_sasl_authenticated, reject_unauth_destination" && \
+	postconf -e smtpd_enforce_tls=yes && \
+	postconf -e smtpd_tls_security_level=encrypt && \
 	sed -i -r \
 		-e 's/^#(smtps\s+inet.+smtpd)$/\1/' \
 		-e 's/^#(submission\s+inet.+smtpd)$/\1/' /etc/postfix/master.cf && \
@@ -97,6 +100,12 @@ RUN postconf -e myorigin=/etc/mailname && \
 		-e 's/^MECHANISMS=".+"/MECHANISMS="sasldb"/' /etc/default/saslauthd && \
 	touch /var/lib/cyrus/tls_sessions.db && \
 	chown cyrus:mail /var/lib/cyrus/tls_sessions.db
+
+COPY etc/ssl /etc/ssl/
+RUN chmod 644 /etc/ssl/certs/ssl-cert-snakeoil.pem && \
+	chown root:root /etc/ssl/certs/ssl-cert-snakeoil.pem && \
+	chmod 640 /etc/ssl/private/ssl-cert-snakeoil.key && \
+	chown root:ssl-cert /etc/ssl/private/ssl-cert-snakeoil.key
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
