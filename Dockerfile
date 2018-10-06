@@ -73,7 +73,7 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e smtpd_sasl_security_options=noanonymous && \
 	postconf -e broken_sasl_auth_clients=yes && \
 	postconf -e smtpd_recipient_restrictions="permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination" && \
-	postconf -e smtpd_tls_security_level=encrypt && \
+	postconf -e smtpd_tls_security_level=may && \
 	sed -i -r \
 		-e 's/^#(smtps\s+inet.+smtpd)$/\1/' \
 		-e 's/^#(submission\s+inet.+smtpd)$/\1/' /etc/postfix/master.cf && \
