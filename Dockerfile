@@ -73,7 +73,6 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e smtpd_sasl_security_options=noanonymous && \
 	postconf -e broken_sasl_auth_clients=yes && \
 	postconf -e smtpd_recipient_restrictions="permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination" && \
-	postconf -e smtpd_enforce_tls=yes && \
 	postconf -e smtpd_tls_security_level=encrypt && \
 	sed -i -r \
 		-e 's/^#(smtps\s+inet.+smtpd)$/\1/' \

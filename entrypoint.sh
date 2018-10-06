@@ -20,7 +20,7 @@ if [ -z "$(sasldblistusers2)" ]; then
 		echo "create user $user"
 		echo "$pass" | saslpasswd2 -p -u ${MAILNAME} -c $user
 		if [ $user = "cyrus" ]; then
-			echo "login password for $user"
+			echo "set login password for $user"
 			echo "${user}:$pass" | chpasswd
 		fi
 		if [ $user != "cyrus" -a ! -d "/var/spool/cyrus/mail/${user:0:1}/user/${user}" ]; then
