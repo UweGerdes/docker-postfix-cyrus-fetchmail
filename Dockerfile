@@ -53,6 +53,8 @@ RUN apt-get update && \
 	echo "root ${SENDERCANONICAL}" > /etc/postfix/sender_canonical && \
 	postmap /etc/postfix/sender_canonical && \
 	cp -rp /var/spool/postfix /var/spool/postfix.init && \
+	cp -rp /var/spool/cyrus/mail /var/spool/cyrus/mail.init && \
+	cp -rp /var/lib/cyrus /var/lib/cyrus.init && \
 	chown fetchmail:nogroup /var/lib/fetchmail/fetchmailrc && \
 	echo "4-59/5 * * * * fetchmail /var/lib/fetchmail/fetchstart.sh" >> /etc/crontab
 

@@ -2,7 +2,17 @@
 
 if [ -n "$(find "/var/spool/postfix/" -maxdepth 0 -type d -empty 2>/dev/null)" ]; then
 	echo "populating postfix directory"
-	cp -rp /var/spool/postfix.init/* /var/spool/postfix
+	cp -rp /var/spool/postfix.init /var/spool/postfix
+fi
+
+if [ -n "$(find "/var/spool/cyrus/mail/" -maxdepth 0 -type d -empty 2>/dev/null)" ]; then
+	echo "populating postfix directory"
+	cp -rp /var/spool/cyrus/mail.init /var/spool/cyrus/mail
+fi
+
+if [ -n "$(find "/var/lib/cyrus/" -maxdepth 0 -type d -empty 2>/dev/null)" ]; then
+	echo "populating postfix directory"
+	cp -rp /var/lib/cyrus.init /var/lib/cyrus
 fi
 
 postfix set-permissions >/dev/null 2>&1

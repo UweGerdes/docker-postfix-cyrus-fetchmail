@@ -36,8 +36,8 @@ $ docker run -it \
 	-p 587:587 \
 	-p 993:993 \
 	--volume /srv/docker/postfix:/var/spool/postfix \
-	--volume /srv/docker/cyrus/mail:/var/spool/cyrus/mail2 \
-	--volume /srv/docker/cyrus/lib:/var/lib/cyrus2 \
+	--volume /srv/docker/cyrus/mail:/var/spool/cyrus/mail \
+	--volume /srv/docker/cyrus/lib:/var/lib/cyrus \
 	uwegerdes/mailserver \
 	bash
 ```
@@ -55,9 +55,11 @@ Give user cyrus a password and try to connect from another computer in your netw
 
 ```bash
 $ ssh -p 50022 cyrus@mailserver
+$ /usr/bin/rsync -e "ssh -p 50022 cyrus" --delete -rtpvogz "/var/lib/cyrus/" "cyrus@raspihome:/srv/docker/cyrus/lib"
+$ /usr/bin/rsync --delete -rtpvogz "/var/spool/cyrus/mail/u/" "pi@raspihome:/srv/docker/cyrus/mail/u"
 ```
 
-Accept the key. You may want to rsync the contents of mail.
+Accept the key. You may want to rsync the contents of spool/cyrus/mail and lib/cyrus.
 
 ## Logs
 
