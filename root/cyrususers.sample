@@ -1,3 +1,3 @@
-cyrus:cyrpasswd
-mailbox:mailpass
-user2:userpassword
+cyrus cyrpasswd
+mailbox mailpass
+user2 userpassword

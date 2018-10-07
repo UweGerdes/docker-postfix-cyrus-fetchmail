@@ -16,7 +16,7 @@ service postfix start
 service cyrus-imapd restart
 
 if [ -z "$(sasldblistusers2)" ]; then
-	while IFS=":" read -r user pass; do
+	while IFS=" " read -r user pass; do
 		echo "create user $user"
 		echo "$pass" | saslpasswd2 -p -u ${MAILNAME} -c $user
 		if [ $user = "cyrus" ]; then
