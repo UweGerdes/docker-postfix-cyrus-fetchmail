@@ -13,8 +13,8 @@ Build the image with (mind the dot):
 ```bash
 $ docker build \
 	-t uwegerdes/mailserver \
-	--build-arg SMTPSERVER=smtp.server.com \
-	--build-arg SENDERCANONICAL=user@server.com \
+	--build-arg SMTPSERVER=smtp.1und1.de \
+	--build-arg SENDERCANONICAL=mailserver@uwegerdes.de \
 	.
 ```
 
@@ -36,6 +36,7 @@ $ docker run -it \
 	-p 587:587 \
 	-p 993:993 \
 	--volume /srv/docker/postfix:/var/spool/postfix \
+	--volume /srv/docker/cyrus/mail:/var/spool/cyrus/mail \
 	uwegerdes/mailserver \
 	bash
 ```
