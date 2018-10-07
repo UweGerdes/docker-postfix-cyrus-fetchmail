@@ -54,6 +54,8 @@ RUN apt-get update && \
 	postmap /etc/postfix/sender_canonical && \
 	cp -rp /var/spool/postfix /var/spool/postfix.init && \
 	cp -rp /var/spool/cyrus/mail /var/spool/cyrus/mail.init && \
+	touch /var/lib/cyrus/tls_sessions.db && \
+	chown cyrus:mail /var/lib/cyrus/tls_sessions.db && \
 	cp -rp /var/lib/cyrus /var/lib/cyrus.init && \
 	chown fetchmail:nogroup /var/lib/fetchmail/fetchmailrc && \
 	echo "4-59/5 * * * * fetchmail /var/lib/fetchmail/fetchstart.sh" >> /etc/crontab
@@ -98,9 +100,7 @@ RUN postconf -e myorigin=/etc/mailname && \
 		-e 's/^(module\(load="imklog")/#\1/' /etc/rsyslog.conf && \
 	sed -i -r \
 		-e 's/^START=no/START=yes/' \
-		-e 's/^MECHANISMS=".+"/MECHANISMS="sasldb"/' /etc/default/saslauthd && \
-	touch /var/lib/cyrus/tls_sessions.db && \
-	chown cyrus:mail /var/lib/cyrus/tls_sessions.db
+		-e 's/^MECHANISMS=".+"/MECHANISMS="sasldb"/' /etc/default/saslauthd
 
 COPY etc/ssl /etc/ssl/
 RUN chmod 644 /etc/ssl/certs/ssl-cert-snakeoil.pem && \
