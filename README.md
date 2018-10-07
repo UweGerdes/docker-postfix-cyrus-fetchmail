@@ -55,8 +55,8 @@ Give user cyrus a password and try to connect from another computer in your netw
 
 ```bash
 $ ssh -p 50022 cyrus@mailserver
-$ /usr/bin/rsync -e "ssh -p 50022 cyrus" --delete -rtpvogz "/var/lib/cyrus/" "cyrus@raspihome:/srv/docker/cyrus/lib"
-$ /usr/bin/rsync --delete -rtpvogz "/var/spool/cyrus/mail/u/" "pi@raspihome:/srv/docker/cyrus/mail/u"
+$ /usr/bin/rsync -e "ssh -p 50022 cyrus@raspihome" --delete -rtpvogz "/var/lib/cyrus/" "cyrus@raspihome:/srv/docker/cyrus/lib"
+$ /usr/bin/rsync -e "ssh -p 50022 cyrus@raspihome" --delete -rtpvogz "/var/spool/cyrus/mail/u/" "cyrus@raspihome:/srv/docker/cyrus/mail/u"
 ```
 
 Accept the key. You may want to rsync the contents of spool/cyrus/mail and lib/cyrus.
