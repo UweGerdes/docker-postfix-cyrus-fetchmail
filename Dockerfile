@@ -11,6 +11,7 @@ ENV FETCHMAILHOME=/root
 ENV FETCHMAILUSER=root
 
 COPY entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY start.sh /usr/local/bin/start.sh
 COPY etc/aliases /etc/aliases
 COPY etc/logrotate.d/fetchmail.log /etc/logrotate.d/fetchmail.log
 COPY etc/postfix/sasl_password /etc/postfix/sasl_password
@@ -22,6 +23,7 @@ COPY usr/lib/sasl2/smtpd.conf /usr/lib/sasl2/smtpd.conf
 RUN chmod 600 /etc/postfix/sasl_password && \
 	chmod 600 /root/cyrususers && \
 	chmod 755 /usr/local/bin/entrypoint.sh && \
+	chmod 755 /usr/local/bin/start.sh && \
 	chmod 600 /var/lib/fetchmail/fetchmailrc && \
 	touch /var/log/fetchmail.log && \
 	chmod 666 /var/log/fetchmail.log && \
@@ -112,4 +114,4 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
 EXPOSE 22/tcp 25/tcp 110/tcp 143/tcp 465/tcp 587/tcp 993/tcp
 
-CMD ["bash"]
+CMD ["/usr/local/bin/start.sh"]

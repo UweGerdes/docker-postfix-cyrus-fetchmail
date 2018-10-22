@@ -23,6 +23,12 @@ if [ ! -f "/var/lib/cyrus/tls_sessions.db" ]; then
 	chown cyrus:mail /var/lib/cyrus/tls_sessions.db
 fi
 
+if [ ! -f "/var/log/syslog" ]; then
+	chmod 777 /var/log
+	touch /var/log/syslog
+	chown syslog:adm /var/log/syslog
+fi
+
 postfix set-permissions >/dev/null 2>&1
 
 rm -f /run/rsyslogd.pid
