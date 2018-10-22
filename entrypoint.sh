@@ -27,6 +27,8 @@ if [ ! -f "/var/log/syslog" ]; then
 	chmod 777 /var/log
 	touch /var/log/syslog
 	chown syslog:adm /var/log/syslog
+	touch /var/log/fetchmail.log
+	chmod 666 /var/log/fetchmail.log
 fi
 
 postfix set-permissions >/dev/null 2>&1
