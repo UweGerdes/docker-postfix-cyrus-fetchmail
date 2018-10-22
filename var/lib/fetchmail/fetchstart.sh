@@ -2,7 +2,6 @@
 #
 DATE=`date +"%b %d %H:%M:%S"`
 HOSTNAME=`hostname`
-MYNAME=`whoami`
 LOGFILE="/var/log/fetchmail.log"
 
 echo -n "${DATE} ${HOSTNAME}" >> ${LOGFILE}
