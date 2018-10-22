@@ -18,6 +18,11 @@ if [ -n "$(find "/var/lib/cyrus/" -maxdepth 0 -type d -empty 2>/dev/null)" ]; th
 	chown cyrus:mail /var/lib/cyrus
 fi
 
+if [ ! -f "/var/lib/cyrus/tls_sessions.db" ]; then
+	touch /var/lib/cyrus/tls_sessions.db
+	chown cyrus:mail /var/lib/cyrus/tls_sessions.db
+fi
+
 postfix set-permissions >/dev/null 2>&1
 
 rm -f /run/rsyslogd.pid
