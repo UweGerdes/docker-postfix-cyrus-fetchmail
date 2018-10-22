@@ -88,6 +88,7 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -F 'submission/inet/chroot = n' && \
 	postconf -F 'lmtp/unix/chroot = n' && \
 	sed -i -r \
+		-e 's/(\s)#(idled\s)/\1\2/' \
 		-e 's/(\s)#(imaps\s+cmd="imapd -s -U 30")/\1\2/' \
 		-e 's/(\s)(nntp\s)/\1#\2/' \
 		-e 's/(\s)(http\s)/\1#\2/' \
