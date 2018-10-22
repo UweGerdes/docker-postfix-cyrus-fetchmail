@@ -4,7 +4,7 @@
 
 Copy the `*.sample` files to files without the `.sample` extension and edit them to your needs. You should `chmod 600` the copies because they contain passwords.
 
-Check other files and perhaps add some settings.
+Check other files and perhaps add some settings. You might want to `git update-index --assume-unchanged etc/aliases` to keep changes out of git.
 
 ## Build
 
@@ -28,16 +28,17 @@ Run the mailserver container with:
 $ docker run -it \
 	--name mailserver \
 	--hostname mailserver \
-	-p 50022:22 \
-	-p 50025:25 \
-	-p 110:110 \
-	-p 143:143 \
-	-p 465:465 \
-	-p 587:587 \
-	-p 993:993 \
-	--volume /srv/docker/postfix:/var/spool/postfix \
-	--volume /srv/docker/cyrus/mail:/var/spool/cyrus/mail \
-	--volume /srv/docker/cyrus/lib:/var/lib/cyrus \
+	-p 61022:22 \
+	-p 61025:25 \
+	-p 61110:110 \
+	-p 61143:143 \
+	-p 61465:465 \
+	-p 61587:587 \
+	-p 61993:993 \
+	--volume /srv/docker/mailserver/postfix:/var/spool/postfix \
+	--volume /srv/docker/mailserver/cyrus/mail:/var/spool/cyrus/mail \
+	--volume /srv/docker/mailserver/cyrus/lib:/var/lib/cyrus \
+	--volume /srv/docker/mailserver/log:/var/log \
 	uwegerdes/mailserver \
 	bash
 ```
