@@ -48,12 +48,9 @@ echo 'TODO sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtp
 #sudo -s -H -u cyrus echo 'init key login' && ssh-keygen -t rsa -C cyrus@mailserver -N '' -f ~/.ssh/id_rsa && ssh-copy-id -i ~/.ssh/id_rsa.pub -p 61022 cyrus@mailhost2
 		sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogz "/var/spool/cyrus/mail/t/user/test/" "raspihome:/var/spool/cyrus/mail/t/user/test"
 
-ps ax
 	echo "starting mailserver"
 	service cyrus-imapd restart
-ps ax
 	service postfix restart
-ps ax
 else
 	echo "mailserver not stopped, fetchmail running with PID ${FETCHPID}"
 	read -p "this should never happen - please check... [RETURN]"
