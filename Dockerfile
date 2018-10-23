@@ -14,6 +14,7 @@ COPY usr/local/bin /usr/local/bin
 COPY etc/aliases /etc/aliases
 COPY etc/logrotate.d/fetchmail.log /etc/logrotate.d/fetchmail.log
 COPY etc/postfix/sasl_password /etc/postfix/sasl_password
+COPY etc/sudoers.d/* /etc/sudoers.d/
 COPY root/cyrususers /root/cyrususers
 COPY var/lib/fetchmail/fetchmailrc /var/lib/fetchmail/fetchmailrc
 COPY var/lib/fetchmail/fetchstart.sh /var/lib/fetchmail/fetchstart.sh

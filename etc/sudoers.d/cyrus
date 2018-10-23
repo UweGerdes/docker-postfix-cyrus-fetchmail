@@ -1,0 +1,2 @@
+Cmnd_Alias MAILSERVER = /usr/local/bin/mailserverstart.sh, /usr/local/bin/mailserverstop.sh
+cyrus   ALL = NOPASSWD: MAILSERVER
