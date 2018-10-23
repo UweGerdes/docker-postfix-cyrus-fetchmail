@@ -27,7 +27,7 @@ done
 sleep 2
 FETCHPID=`/usr/bin/pgrep fetchmail`
 if [ -z "${FETCHPID}" ] ; then
-	echo "TODO mailserverstop auf ${TARGETHOST} aufrufen..."
+	echo "mailserverstop auf ${TARGETHOST} aufrufen..."
 	sudo -u cyrus ssh -p 61022 cyrus@raspihome sudo /usr/local/bin/mailserverstop.sh
 	#sleep 10
 	MAILSERVERRUN=`/bin/ps ax | egrep 'postfix/sbin/.?master|cyr.?master'`
@@ -52,6 +52,8 @@ echo 'TODO sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtp
 	echo "starting mailserver"
 	service cyrus-imapd restart
 	service postfix restart
+	echo "mailserverstart auf ${TARGETHOST} aufrufen..."
+	sudo -u cyrus ssh -p 61022 cyrus@raspihome sudo /usr/local/bin/mailserverstart.sh
 else
 	echo "mailserver not stopped, fetchmail running with PID ${FETCHPID}"
 	read -p "this should never happen - please check... [RETURN]"
