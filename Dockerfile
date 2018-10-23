@@ -41,6 +41,7 @@ RUN apt-get update && \
 		libsasl2-modules \
 		logrotate \
 		postfix \
+		rsync \
 		rsyslog \
 		sasl2-bin && \
 	apt-get clean && \
