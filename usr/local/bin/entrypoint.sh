@@ -38,8 +38,8 @@ service rsyslog start
 service cron start
 service ssh start
 service saslauthd start
-service postfix start
 service cyrus-imapd restart
+service postfix start
 
 if [ -z "$(sasldblistusers2)" ]; then
 	CYRUSPASS=cyrpasswd
