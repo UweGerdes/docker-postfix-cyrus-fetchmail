@@ -7,14 +7,15 @@ if [ -z "${TARGETHOST}" ] ; then
 	exit 1
 fi
 
-if [ "`whoami`" != "cyrus" ] ; then
-	echo "script has to be started as user cyrus"
+if [ "`whoami`" != "root" ] ; then
+	echo "script has to be started as user root"
 	exit 1
 fi
 
 echo "TODO stopping remote mailserver"
 
 echo "TODO stopping local mailserver"
+
 echo "stop" > /tmp/fetchstart.lock
 sleep 1
 FETCHPID=`/usr/bin/pgrep fetchmail`
@@ -27,28 +28,32 @@ sleep 2
 FETCHPID=`/usr/bin/pgrep fetchmail`
 if [ -z "${FETCHPID}" ] ; then
 	echo "TODO mailserverstop auf ${TARGETHOST} aufrufen..."
-	sleep 10
+	#sleep 10
 	MAILSERVERRUN=`/bin/ps ax | egrep 'postfix/sbin/.?master|cyr.?master'`
 	if [ -n "${MAILSERVERRUN}" ] ; then
 		echo "stopping mailserver - please wait"
-		service postfix stop
+		/usr/sbin/postfix stop
 		sleep 2
 		service cyrus-imapd stop
 		sleep 2
 	else
 		echo "kein Stop des Mail-Systems"
 	fi
-echo 'TODO /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogz "/var/lib/cyrus/" "raspihome:/srv/docker/cyrus/lib"'
+echo 'TODO sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogz "/var/lib/cyrus/" "raspihome:/srv/docker/cyrus/lib"'
 #		/usr/bin/rsync --delete -rtpvogz "/mnt/Daten/cyrus/lib/" "cyrus@${TARGETHOST}:/mnt/Daten/cyrus/lib"
 
 # for all users in replication list
-echo 'TODO /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogz "/var/spool/cyrus/mail/u/user/uweimap/" "raspihome:/var/spool/cyrus/mail/u/user/uweimap"
-"'
-#		/usr/bin/rsync --delete -rtpvogz "/mnt/Daten/cyrus/mail/" "cyrus@${TARGETHOST}:/mnt/Daten/cyrus/mail"
+echo 'TODO sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogz "/var/spool/cyrus/mail/u/user/uweimap/" "raspihome:/var/spool/cyrus/mail/u/user/uweimap"'
 
+#sudo -s -H -u cyrus echo 'init key login' && ssh-keygen -t rsa -C cyrus@mailserver -N '' -f ~/.ssh/id_rsa && ssh-copy-id -i ~/.ssh/id_rsa.pub -p 61022 cyrus@mailhost2
+		sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogz "/var/spool/cyrus/mail/t/user/test/" "raspihome:/var/spool/cyrus/mail/t/user/test"
+
+ps ax
 	echo "starting mailserver"
 	service cyrus-imapd restart
+ps ax
 	service postfix restart
+ps ax
 else
 	echo "mailserver not stopped, fetchmail running with PID ${FETCHPID}"
 	read -p "this should never happen - please check... [RETURN]"
