@@ -61,7 +61,7 @@ RUN apt-get update && \
 	chown cyrus:mail /var/lib/cyrus/tls_sessions.db && \
 	cp -rp /var/lib/cyrus /var/lib/cyrus.init && \
 	chown fetchmail:nogroup /var/lib/fetchmail/fetchmailrc && \
-	echo "4-59/5 * * * * fetchmail /var/lib/fetchmail/fetchstart.sh" >> /etc/crontab
+	echo "0/5 * * * * fetchmail /var/lib/fetchmail/fetchstart.sh" >> /etc/crontab
 
 RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e myhostname=$MAILNAME && \
