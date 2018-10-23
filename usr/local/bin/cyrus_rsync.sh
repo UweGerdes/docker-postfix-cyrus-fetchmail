@@ -28,7 +28,7 @@ sleep 2
 FETCHPID=`/usr/bin/pgrep fetchmail`
 if [ -z "${FETCHPID}" ] ; then
 	echo "mailserverstop auf ${TARGETHOST} aufrufen..."
-	sudo -u cyrus ssh -p 61022 cyrus@raspihome sudo /usr/local/bin/mailserverstop.sh
+	sudo -u cyrus ssh -p 61022 cyrus@${TARGETHOST} sudo /usr/local/bin/mailserverstop.sh
 	#sleep 10
 	MAILSERVERRUN=`/bin/ps ax | egrep 'postfix/sbin/.?master|cyr.?master'`
 	if [ -n "${MAILSERVERRUN}" ] ; then
@@ -40,20 +40,23 @@ if [ -z "${FETCHPID}" ] ; then
 	else
 		echo "kein Stop des Mail-Systems"
 	fi
-echo 'TODO sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogz "/var/lib/cyrus/" "raspihome:/srv/docker/cyrus/lib"'
-#		/usr/bin/rsync --delete -rtpvogz "/mnt/Daten/cyrus/lib/" "cyrus@${TARGETHOST}:/mnt/Daten/cyrus/lib"
-
-# for all users in replication list
-echo 'TODO sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogz "/var/spool/cyrus/mail/u/user/uweimap/" "raspihome:/var/spool/cyrus/mail/u/user/uweimap"'
-
-#sudo -s -H -u cyrus echo 'init key login' && ssh-keygen -t rsa -C cyrus@mailserver -N '' -f ~/.ssh/id_rsa && ssh-copy-id -i ~/.ssh/id_rsa.pub -p 61022 cyrus@mailhost2
-		sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogz "/var/spool/cyrus/mail/t/user/test/" "raspihome:/var/spool/cyrus/mail/t/user/test"
+	echo sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogz "/var/lib/cyrus/" "${TARGETHOST}:/var/lib/cyrus"
+	# for all users in replication list
+	if [ -f "/root/rsyncusers" ] ; then
+		echo "rsync mailboxes"
+		while IFS=" " read -r user ; do
+			if [ -d "/var/spool/cyrus/mail/${user:0:1}/user/${user}" ]; then
+				echo "rsync mailbox for $user"
+				echo sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogz "/var/spool/cyrus/mail/${user:0:1}/user/${user}/" "${TARGETHOST}:/var/spool/cyrus/mail/${user:0:1}/user/${user}"
+			fi
+		done < "/root/rsyncusers"
+	fi
 
 	echo "starting mailserver"
 	service cyrus-imapd restart
 	service postfix restart
 	echo "mailserverstart auf ${TARGETHOST} aufrufen..."
-	sudo -u cyrus ssh -p 61022 cyrus@raspihome sudo /usr/local/bin/mailserverstart.sh
+	sudo -u cyrus ssh -p 61022 cyrus@${TARGETHOST} sudo /usr/local/bin/mailserverstart.sh
 else
 	echo "mailserver not stopped, fetchmail running with PID ${FETCHPID}"
 	read -p "this should never happen - please check... [RETURN]"
