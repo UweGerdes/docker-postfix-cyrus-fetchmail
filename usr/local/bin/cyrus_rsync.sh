@@ -28,6 +28,7 @@ sleep 2
 FETCHPID=`/usr/bin/pgrep fetchmail`
 if [ -z "${FETCHPID}" ] ; then
 	echo "TODO mailserverstop auf ${TARGETHOST} aufrufen..."
+	sudo -u cyrus ssh -p 61022 cyrus@raspihome sudo /usr/local/bin/mailserverstop.sh
 	#sleep 10
 	MAILSERVERRUN=`/bin/ps ax | egrep 'postfix/sbin/.?master|cyr.?master'`
 	if [ -n "${MAILSERVERRUN}" ] ; then
