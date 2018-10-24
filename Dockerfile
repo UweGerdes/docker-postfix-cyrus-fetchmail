@@ -3,7 +3,6 @@
 FROM uwegerdes/baseimage
 MAINTAINER Uwe Gerdes <entwicklung@uwegerdes.de>
 
-ARG SMTPSERVER=smtp.server.com
 ARG SENDERCANONICAL=user@server.com
 
 ENV MAILNAME=mailserver
@@ -18,7 +17,7 @@ COPY etc/sudoers.d/* /etc/sudoers.d/
 COPY root/* /root/
 COPY var/lib/fetchmail/fetchmailrc /var/lib/fetchmail/fetchmailrc
 COPY var/lib/fetchmail/fetchstart.sh /var/lib/fetchmail/fetchstart.sh
-COPY usr/lib/sasl2/smtpd.conf /usr/lib/sasl2/smtpd.conf
+COPY usr/lib/sasl2/smtpd.conf /usr/lib/sasl2/smtpd2.conf
 
 RUN chmod 600 /etc/postfix/sasl_password && \
 	chmod 600 /root/cyrususers && \
@@ -65,7 +64,7 @@ RUN apt-get update && \
 RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e myhostname=$MAILNAME && \
 	postconf -e mydestination="$MAILNAME, $MAILNAME.localdomain, localhost.localdomain, localhost" && \
-	postconf -e relayhost=$SMTPSERVER && \
+	postconf -e relayhost=$(awk '{print $1}' /etc/postfix/sasl_password) && \
 	postconf -e mynetworks="127.0.0.0/8 192.168.1.0/24" && \
 	postconf -e message_size_limit=30720000 && \
 	postconf -e inet_protocols=ipv4 && \
