@@ -20,7 +20,7 @@ $ docker build \
 
 ## Usage
 
-Check for other MTA on your server - they should not use the ports listed below: `sudo netstat -tulpen`. Perhaps you should `sudo dpkg-reconfigure exim4-config` to listen on local address 127.0.0.2 (which will not interfere with localhost).
+The ports are mapped to unused ports because at least 22 and 25 are in use on a usual Ubuntu installation. Please set the mail client ports to those exported ports.
 
 Run the mailserver container with:
 
@@ -62,14 +62,10 @@ root@mailserver:/# ssh -p 61022 cyrus@mailhost2
 
 Accept fingerprint and log out again.
 
-You may want to use key based login to avoid password input - please accept fingerprint and logout, then generate key file and copy to remote docker container:
+You may want to use key based login to avoid password input - please accept fingerprint and login, the generated key file is copied to remote docker container:
 
 ```bash
-root@mailserver:/# sudo -s -H -u cyrus
-cyrus@mailserver:/$ ssh -p 61022 cyrus@mailhost2
-cyrus@mailserver:~$ ^D
-cyrus@mailserver:/$ ssh-keygen -t rsa -C cyrus@mailserver -N '' -f ~/.ssh/id_rsa
-cyrus@mailserver:/$ ssh-copy-id -i ~/.ssh/id_rsa.pub -p 61022 cyrus@mailhost2
+root@mailserver:/# sudo -H -u cyrus sh -c "ssh-keygen -t rsa -C cyrus@mailserver -N '' -f ~/.ssh/id_rsa && ssh-copy-id -i ~/.ssh/id_rsa.pub -p 61022 cyrus@raspihome"
 ```
 
 I had to start the container on one computer with `--dns 192.168.1.1` - it didn't find the other system without DNS server. Reason: `/etc/resolv.conf` on host.
@@ -77,8 +73,7 @@ I had to start the container on one computer with `--dns 192.168.1.1` - it didn'
 Commands for replication - TODO please stop other server first
 
 ```bash
-$ /usr/bin/rsync -e "ssh -p 61022 cyrus@raspihome" --delete -rtpvogz "/var/lib/cyrus/" "cyrus@raspihome:/srv/docker/cyrus/lib"
-$ /usr/bin/rsync -e "ssh -p 61022 cyrus@raspihome" --delete -rtpvogz "/var/spool/cyrus/mail/u/" "cyrus@raspihome:/srv/docker/cyrus/mail/u"
+root@mailserver:/# cyrus_rsync.sh mailhost2
 ```
 
 Accept the key. You may want to rsync the contents of spool/cyrus/mail and lib/cyrus.
