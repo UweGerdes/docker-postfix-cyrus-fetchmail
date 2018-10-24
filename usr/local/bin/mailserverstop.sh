@@ -1,7 +1,5 @@
 #!/bin/bash
 
-echo "stopping replication mailserver"
-
 if [ "`whoami`" != "root" ] ; then
 	echo "script has to be started as user root"
 	exit 1
@@ -20,11 +18,12 @@ FETCHPID=`/usr/bin/pgrep fetchmail`
 if [ -z "${FETCHPID}" ] ; then
 	MAILSERVERRUN=`/bin/ps ax | egrep 'postfix/sbin/.?master|cyr.?master'`
 	if [ -n "${MAILSERVERRUN}" ] ; then
-		echo "stopping mailserver - please wait"
+		echo -n "stopping replication mailserver - please wait"
 		/usr/sbin/postfix stop
 		sleep 2
 		service cyrus-imapd stop
 		sleep 2
+		echo " - done"
 	else
 		echo "kein Stop des Mail-Systems"
 	fi

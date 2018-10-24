@@ -3,18 +3,14 @@
 TARGETHOST="$1"
 
 if [ -z "${TARGETHOST}" ] ; then
-	echo "missing argument: targethost"
+	echo "${0} missing argument: targethost"
 	exit 1
 fi
 
 if [ "`whoami`" != "root" ] ; then
-	echo "script has to be started as user root"
+	echo "${0} has to be started as user root"
 	exit 1
 fi
-
-echo "TODO stopping remote mailserver"
-
-echo "TODO stopping local mailserver"
 
 echo "stop" > /tmp/fetchstart.lock
 sleep 1
@@ -27,7 +23,6 @@ done
 sleep 2
 FETCHPID=`/usr/bin/pgrep fetchmail`
 if [ -z "${FETCHPID}" ] ; then
-	echo "mailserverstop auf ${TARGETHOST} aufrufen..."
 	sudo -u cyrus ssh -p 61022 cyrus@${TARGETHOST} sudo /usr/local/bin/mailserverstop.sh
 	#sleep 10
 	MAILSERVERRUN=`/bin/ps ax | egrep 'postfix/sbin/.?master|cyr.?master'`
@@ -40,14 +35,14 @@ if [ -z "${FETCHPID}" ] ; then
 	else
 		echo "kein Stop des Mail-Systems"
 	fi
-	echo sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogz "/var/lib/cyrus/" "${TARGETHOST}:/var/lib/cyrus"
+	sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogzi --size-only "/var/lib/cyrus/" "${TARGETHOST}:/var/lib/cyrus"
 	# for all users in replication list
 	if [ -f "/root/rsyncusers" ] ; then
-		echo "rsync mailboxes"
 		while IFS=" " read -r user ; do
 			if [ -d "/var/spool/cyrus/mail/${user:0:1}/user/${user}" ]; then
+				echo ""
 				echo "rsync mailbox for $user"
-				echo sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogz "/var/spool/cyrus/mail/${user:0:1}/user/${user}/" "${TARGETHOST}:/var/spool/cyrus/mail/${user:0:1}/user/${user}"
+				sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogzi "/var/spool/cyrus/mail/${user:0:1}/user/${user}/" "${TARGETHOST}:/var/spool/cyrus/mail/${user:0:1}/user/${user}"
 			fi
 		done < "/root/rsyncusers"
 	fi
@@ -55,7 +50,6 @@ if [ -z "${FETCHPID}" ] ; then
 	echo "starting mailserver"
 	service cyrus-imapd restart
 	service postfix restart
-	echo "mailserverstart auf ${TARGETHOST} aufrufen..."
 	sudo -u cyrus ssh -p 61022 cyrus@${TARGETHOST} sudo /usr/local/bin/mailserverstart.sh
 else
 	echo "mailserver not stopped, fetchmail running with PID ${FETCHPID}"
