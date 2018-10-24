@@ -11,11 +11,7 @@ Check other files and perhaps add some settings. You might want to `git update-i
 Build the image with (mind the dot):
 
 ```bash
-$ docker build \
-	-t uwegerdes/mailserver \
-	--build-arg SMTPSERVER=smtp.server.com \
-	--build-arg SENDERCANONICAL=mailserver@myserver.com \
-	.
+$ docker build -t uwegerdes/mailserver .
 ```
 
 ## Usage
@@ -39,6 +35,8 @@ $ docker run -it \
 	--volume /srv/docker/mailserver/cyrus/mail:/var/spool/cyrus/mail \
 	--volume /srv/docker/mailserver/cyrus/lib:/var/lib/cyrus \
 	--volume /srv/docker/mailserver/log:/var/log \
+	--volume $(pwd)/usr/local/bin:/usr/local/bin \
+	--dns 192.168.178.1 \
 	uwegerdes/mailserver \
 	bash
 ```

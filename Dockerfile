@@ -9,15 +9,10 @@ ENV MAILNAME=mailserver
 ENV FETCHMAILHOME=/root
 ENV FETCHMAILUSER=root
 
-COPY usr/local/bin /usr/local/bin
-COPY etc/aliases /etc/aliases
-COPY etc/logrotate.d/fetchmail.log /etc/logrotate.d/fetchmail.log
-COPY etc/postfix/sasl_password /etc/postfix/sasl_password
-COPY etc/sudoers.d/* /etc/sudoers.d/
-COPY root/* /root/
-COPY var/lib/fetchmail/fetchmailrc /var/lib/fetchmail/fetchmailrc
-COPY var/lib/fetchmail/fetchstart.sh /var/lib/fetchmail/fetchstart.sh
-COPY usr/lib/sasl2/smtpd.conf /usr/lib/sasl2/smtpd2.conf
+COPY etc /etc
+COPY root /root
+COPY usr /usr
+COPY var /var
 
 RUN chmod 600 /etc/postfix/sasl_password && \
 	chmod 600 /root/cyrususers && \
@@ -51,7 +46,6 @@ RUN apt-get update && \
 	echo "${MAILNAME}" > /etc/mailname && \
 	newaliases && \
 	postmap /etc/postfix/sasl_password && \
-	echo "root ${SENDERCANONICAL}" > /etc/postfix/sender_canonical && \
 	postmap /etc/postfix/sender_canonical && \
 	cp -rp /var/spool/postfix /var/spool/postfix.init && \
 	cp -rp /var/spool/cyrus/mail /var/spool/cyrus/mail.init && \
