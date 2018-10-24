@@ -12,6 +12,11 @@ if [ "`whoami`" != "root" ] ; then
 	exit 1
 fi
 
+if [ ! -f "/root/rsyncusers.${TARGETHOST}" ] ; then
+	echo "${0} missing file: /root/rsyncusers.${TARGETHOST} - are you on a replicated system?"
+	exit 1
+fi
+
 echo "stop" > /tmp/fetchstart.lock
 sleep 1
 FETCHPID=`/usr/bin/pgrep fetchmail`
@@ -35,17 +40,18 @@ if [ -z "${FETCHPID}" ] ; then
 	else
 		echo "kein Stop des Mail-Systems"
 	fi
+
+	# cyrus lib files
 	sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogzi --size-only "/var/lib/cyrus/" "${TARGETHOST}:/var/lib/cyrus"
+
 	# for all users in replication list
-	if [ -f "/root/rsyncusers" ] ; then
-		while IFS=" " read -r user ; do
-			if [ -d "/var/spool/cyrus/mail/${user:0:1}/user/${user}" ]; then
-				echo ""
-				echo "rsync mailbox for $user"
-				sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogzi "/var/spool/cyrus/mail/${user:0:1}/user/${user}/" "${TARGETHOST}:/var/spool/cyrus/mail/${user:0:1}/user/${user}"
-			fi
-		done < "/root/rsyncusers"
-	fi
+	while IFS=" " read -r user ; do
+		if [ -d "/var/spool/cyrus/mail/${user:0:1}/user/${user}" ]; then
+			echo ""
+			echo "rsync mailbox for $user"
+			sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogzi "/var/spool/cyrus/mail/${user:0:1}/user/${user}/" "${TARGETHOST}:/var/spool/cyrus/mail/${user:0:1}/user/${user}"
+		fi
+	done < "/root/rsyncusers.${TARGETHOST}"
 
 	echo "starting mailserver"
 	service cyrus-imapd restart
