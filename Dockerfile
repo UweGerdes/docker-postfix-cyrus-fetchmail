@@ -19,6 +19,7 @@ RUN apt-get update && \
 		cyrus-pop3d \
 		fetchmail \
 		libsasl2-modules \
+		locales \
 		logrotate \
 		postfix \
 		rsync \
