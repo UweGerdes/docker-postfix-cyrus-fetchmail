@@ -1,5 +1,7 @@
 # Docker uwegerdes/mailserver
 
+Mail server setup is a bit tricky - if you want to use one at home this repo is a possible starting point.
+
 ## Edit files
 
 Copy the `*.sample` files to files without the `.sample` extension and edit them to your needs. You should `chmod 600` the copies because they contain passwords.
@@ -72,6 +74,14 @@ Command for replication:
 ```bash
 $ docker exec -it mailserver cyrus_rsync.sh mailhost2
 ```
+
+If you set up a copy mailbox for each user you can use fetchmail on the replication mailserver to load the newest mails and have a nearly syncronous replicatation (mails are not copied to subfolders if the mailclient does so - but at least the mails are saved if the main mailserver deletes all the data). They will be overwritten on the next `cyrus_rsync.sh` - this is intended.
+
+You should think about setting different times for the fetchmail cronjob in `Dockerfile` for the replication mailserver.
+
+## SSL
+
+If you have a mailserver container it has it's own ssl-sert-snakeoil certificates - you may want to copy the files to a mounted volume and add them to the respective locations in this projects directory `etc/ssl/`. They are reused on the next `docker build`.
 
 ## Logs
 
