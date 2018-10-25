@@ -21,24 +21,33 @@ The ports are mapped to unused ports because at least 22 and 25 are in use on a 
 Run the mailserver container with:
 
 ```bash
-$ docker run -it \
+$ docker run -d \
 	--name mailserver \
 	--hostname mailserver \
 	-p 61022:22 \
 	-p 61025:25 \
 	-p 61110:110 \
 	-p 61143:143 \
-	-p 61465:465 \
-	-p 61587:587 \
-	-p 61993:993 \
 	--volume /srv/docker/mailserver/postfix:/var/spool/postfix \
 	--volume /srv/docker/mailserver/cyrus/mail:/var/spool/cyrus/mail \
 	--volume /srv/docker/mailserver/cyrus/lib:/var/lib/cyrus \
 	--volume /srv/docker/mailserver/log:/var/log \
-	--volume $(pwd)/usr/local/bin:/usr/local/bin \
 	--dns 192.168.178.1 \
-	uwegerdes/mailserver \
-	bash
+	uwegerdes/mailserver
+```
+
+I had to start the container on one computer with `--dns 192.168.178.1` - it didn't find the other system without DNS server. Reason: `/etc/resolv.conf` on host.
+
+To execute commands in the docker container enter:
+
+```bash
+$ docker exec -it mailserver bash
+```
+
+If you stopped the container restart it with:
+
+```bash
+$ docker start -ai mailserver
 ```
 
 ## Configuration
@@ -52,30 +61,18 @@ To use TLS with keys that survive recreation of the image copy ssl-cert-snakeoil
 
 The prompt of the docker container is the same on the master and replication - please make shure you enter the commands in the desired docker container!
 
-Give user cyrus a password and try to connect from another computer in your network:
+You may want to use key based login to avoid password input. The generated key file is copied to remote docker container - please accept fingerprint and enter password on remote mailhost2 (the network name of the computer running the docker mailserver container):
 
 ```bash
-root@mailserver:/# ssh -p 61022 cyrus@mailhost2
+$ docker exec -it mailserver sudo -H -u cyrus sh -c "ssh-keygen -t rsa -C cyrus@mailserver -N '' -f ~/.ssh/id_rsa && ssh-copy-id -i ~/.ssh/id_rsa.pub -p 61022 cyrus@mailhost2"
 ```
 
-Accept fingerprint and log out again.
-
-You may want to use key based login to avoid password input - please accept fingerprint and login, the generated key file is copied to remote docker container:
+Command for replication:
 
 ```bash
-root@mailserver:/# sudo -H -u cyrus sh -c "ssh-keygen -t rsa -C cyrus@mailserver -N '' -f ~/.ssh/id_rsa && ssh-copy-id -i ~/.ssh/id_rsa.pub -p 61022 cyrus@raspihome"
+$ docker exec -it mailserver cyrus_rsync.sh mailhost2
 ```
-
-I had to start the container on one computer with `--dns 192.168.1.1` - it didn't find the other system without DNS server. Reason: `/etc/resolv.conf` on host.
-
-Commands for replication - TODO please stop other server first
-
-```bash
-root@mailserver:/# cyrus_rsync.sh mailhost2
-```
-
-Accept the key. You may want to rsync the contents of spool/cyrus/mail and lib/cyrus.
 
 ## Logs
 
-Postfix and Cyrus log to `/var/log/mail.log` and `/var/log/mail.err`.
+You find the logs in the mounted volume `/srv/docker/mailserver/log` (see `docker run` command.
