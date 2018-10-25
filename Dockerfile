@@ -39,7 +39,7 @@ RUN chmod 600 /etc/postfix/sasl_password && \
 	chown root:ssl-cert /etc/ssl/private/ssl-cert-snakeoil.key && \
 	chmod 600 /root/cyrususers && \
 	chmod 755 /usr/local/bin/* && \
-	chown fetchmail:nogroup /var/lib/fetchmail/fetchmailrc && \
+	chown -R fetchmail:nogroup /var/lib/fetchmail && \
 	chmod 600 /var/lib/fetchmail/fetchmailrc && \
 	chmod 755 /var/lib/fetchmail/fetchstart.sh && \
 	echo "0-55/5 * * * * fetchmail /var/lib/fetchmail/fetchstart.sh" >> /etc/crontab && \
