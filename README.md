@@ -31,6 +31,9 @@ $ docker run -d \
 	-p 61025:25 \
 	-p 61110:110 \
 	-p 61143:143 \
+	-p 61465:465 \
+	-p 61587:587 \
+	-p 61993:993 \
 	--volume /srv/docker/mailserver/postfix:/var/spool/postfix \
 	--volume /srv/docker/mailserver/cyrus/mail:/var/spool/cyrus/mail \
 	--volume /srv/docker/mailserver/cyrus/lib:/var/lib/cyrus \
