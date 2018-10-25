@@ -49,7 +49,7 @@ $ docker exec -it mailserver bash
 If you stopped the container restart it with:
 
 ```bash
-$ docker start -ai mailserver
+$ docker start mailserver
 ```
 
 ## Configuration
@@ -81,7 +81,7 @@ You should think about setting different times for the fetchmail cronjob in `Doc
 
 ## SSL
 
-If you have a mailserver container it has it's own ssl-sert-snakeoil certificates - you may want to copy the files to a mounted volume and add them to the respective locations in this projects directory `etc/ssl/`. They are reused on the next `docker build`.
+If you have a mailserver container it has it's own ssl-sert-snakeoil certificates - you may want to copy the files to a mounted volume and add them to the respective locations in this projects directory `etc/ssl/`. They are reused on the next `docker build` and your mail clients should only comply on the first connection to the mailserver with that certificate.
 
 ## Logs
 
