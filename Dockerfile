@@ -9,19 +9,6 @@ ENV MAILNAME=mailserver
 ENV FETCHMAILHOME=/root
 ENV FETCHMAILUSER=root
 
-COPY etc /etc
-COPY root /root
-COPY usr /usr
-COPY var /var
-
-RUN chmod 600 /etc/postfix/sasl_password && \
-	chmod 600 /root/cyrususers && \
-	chmod 755 /usr/local/bin/* && \
-	chmod 600 /var/lib/fetchmail/fetchmailrc && \
-	touch /var/log/fetchmail.log && \
-	chmod 666 /var/log/fetchmail.log && \
-	chmod 755 /var/lib/fetchmail/fetchstart.sh
-
 RUN apt-get update && \
 	apt-get install -y \
 		cron \
@@ -38,7 +25,26 @@ RUN apt-get update && \
 		rsyslog \
 		sasl2-bin && \
 	apt-get clean && \
-	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* && \
+	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
+
+COPY etc /etc
+COPY root /root
+COPY usr /usr
+COPY var /var
+
+RUN chmod 600 /etc/postfix/sasl_password && \
+	chmod 644 /etc/ssl/certs/ssl-cert-snakeoil.pem && \
+	chown root:root /etc/ssl/certs/ssl-cert-snakeoil.pem && \
+	chmod 640 /etc/ssl/private/ssl-cert-snakeoil.key && \
+	chown root:ssl-cert /etc/ssl/private/ssl-cert-snakeoil.key && \
+	chmod 600 /root/cyrususers && \
+	chmod 755 /usr/local/bin/* && \
+	chown fetchmail:nogroup /var/lib/fetchmail/fetchmailrc && \
+	chmod 600 /var/lib/fetchmail/fetchmailrc && \
+	chmod 755 /var/lib/fetchmail/fetchstart.sh && \
+	echo "0-55/5 * * * * fetchmail /var/lib/fetchmail/fetchstart.sh" >> /etc/crontab && \
+	touch /var/log/fetchmail.log && \
+	chmod 666 /var/log/fetchmail.log && \
 	adduser cyrus ssl-cert && \
 	usermod --shell /bin/bash cyrus && \
 	adduser postfix mail && \
@@ -51,9 +57,7 @@ RUN apt-get update && \
 	cp -rp /var/spool/cyrus/mail /var/spool/cyrus/mail.init && \
 	touch /var/lib/cyrus/tls_sessions.db && \
 	chown cyrus:mail /var/lib/cyrus/tls_sessions.db && \
-	cp -rp /var/lib/cyrus /var/lib/cyrus.init && \
-	chown fetchmail:nogroup /var/lib/fetchmail/fetchmailrc && \
-	echo "0-55/5 * * * * fetchmail /var/lib/fetchmail/fetchstart.sh" >> /etc/crontab
+	cp -rp /var/lib/cyrus /var/lib/cyrus.init
 
 RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e myhostname=$MAILNAME && \
@@ -97,12 +101,6 @@ RUN postconf -e myorigin=/etc/mailname && \
 	sed -i -r \
 		-e 's/^START=no/START=yes/' \
 		-e 's/^MECHANISMS=".+"/MECHANISMS="sasldb"/' /etc/default/saslauthd
-
-COPY etc/ssl /etc/ssl/
-RUN chmod 644 /etc/ssl/certs/ssl-cert-snakeoil.pem && \
-	chown root:root /etc/ssl/certs/ssl-cert-snakeoil.pem && \
-	chmod 640 /etc/ssl/private/ssl-cert-snakeoil.key && \
-	chown root:ssl-cert /etc/ssl/private/ssl-cert-snakeoil.key
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
