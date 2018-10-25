@@ -24,6 +24,7 @@ Run the mailserver container with:
 
 ```bash
 $ docker run -d \
+	--restart=always \
 	--name mailserver \
 	--hostname mailserver \
 	-p 61022:22 \
