@@ -3,6 +3,8 @@
 FROM uwegerdes/baseimage
 MAINTAINER Uwe Gerdes <entwicklung@uwegerdes.de>
 
+ARG CRONTAB_MIN="0-55/5"
+
 ENV MAILNAME=mailserver
 ENV FETCHMAILHOME=/root
 ENV FETCHMAILUSER=root
@@ -41,7 +43,7 @@ RUN chmod 600 /etc/postfix/sasl_password && \
 	chown -R fetchmail:nogroup /var/lib/fetchmail && \
 	chmod 600 /var/lib/fetchmail/fetchmailrc && \
 	chmod 755 /var/lib/fetchmail/fetchstart.sh && \
-	echo "0-55/5 * * * * fetchmail /var/lib/fetchmail/fetchstart.sh" >> /etc/crontab && \
+	echo "${CRONTAB_MIN} * * * * fetchmail /var/lib/fetchmail/fetchstart.sh" >> /etc/crontab && \
 	touch /var/log/fetchmail.log && \
 	chmod 666 /var/log/fetchmail.log && \
 	adduser cyrus ssl-cert && \

@@ -13,8 +13,10 @@ Check other files and perhaps add some settings. You might want to `git update-i
 Build the image with (mind the dot):
 
 ```bash
-$ docker build -t uwegerdes/mailserver .
+$ docker build -t uwegerdes/mailserver --build-arg CRONTAB_MIN="4-59/5" .
 ```
+
+`CRONTAB_MIN` is the minutes entry for `/etc/crontab` when fetchmail will be started.
 
 ## Usage
 
