@@ -3,8 +3,6 @@
 FROM uwegerdes/baseimage
 MAINTAINER Uwe Gerdes <entwicklung@uwegerdes.de>
 
-ARG SENDERCANONICAL=user@server.com
-
 ENV MAILNAME=mailserver
 ENV FETCHMAILHOME=/root
 ENV FETCHMAILUSER=root
