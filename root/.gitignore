@@ -1,5 +1,5 @@
 cyrususers
 rsyncusers
-hook.sh
+authenticator.sh
 .*
 !.gitignore

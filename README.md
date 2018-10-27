@@ -83,11 +83,28 @@ $ docker exec -it mailserver cyrus_rsync.sh mailhost2
 
 If you set up a copy mailbox for each user you can use fetchmail on the replication mailserver to load the newest mails and have a nearly syncronous replicatation (mails are not copied to subfolders if the mailclient does so - but at least the mails are saved if the main mailserver deletes all the data). They will be overwritten on the next `cyrus_rsync.sh` - this is intended.
 
-You should think about setting different times for the fetchmail cronjob in `Dockerfile` for the replication mailserver.
+You should think about setting different times for the fetchmail cronjob in `Dockerfile` for the replication mailserver (see `CRONTAB_MIN` above).
 
 ## SSL
 
 If you have a mailserver container it has it's own ssl-sert-snakeoil certificates - you may want to copy the files to a mounted volume and add them to the respective locations in this projects directory `etc/ssl/`. They are reused on the next `docker build` and your mail clients should only comply on the first connection to the mailserver with that certificate.
+
+### Let's Encrypt
+
+I've set up Let's Encrypt `certbot` on the host running the mailserver so I can include the files in the `docker run` command:
+
+```bash
+	--volume /etc/letsencrypt:/etc/letsencrypt \
+```
+
+Or build your image with a `/root/authenticator.sh` to be used as `certbot --manual-auth-hook` script - I'm using it with a desec.io dynamic dns and they provide a hook.sh script. Then create a `/root/.certbot` with a line `CERTBOT_DOMAIN=your.domain.com` and build a new image.
+
+Perhaps some changes are needed in `/root/setup-letsencrypt.sh`.
+
+Now install `certbot` and your Let's Encrypt certificate with `setup-letsencrypt.sh`. Setup for `cyrus` is included.
+
+TODO: Some modifications and symbolic links for `postfix` is required.
+For `certbot` a post-deploy-hook should send a mail.
 
 ## Logs
 

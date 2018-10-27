@@ -38,6 +38,7 @@ RUN chmod 600 /etc/postfix/sasl_password && \
 	chown root:root /etc/ssl/certs/ssl-cert-snakeoil.pem && \
 	chmod 640 /etc/ssl/private/ssl-cert-snakeoil.key && \
 	chown root:ssl-cert /etc/ssl/private/ssl-cert-snakeoil.key && \
+	chmod 755 /root/*.sh && \
 	chmod 600 /root/cyrususers && \
 	chmod 755 /usr/local/bin/* && \
 	chown -R fetchmail:nogroup /var/lib/fetchmail && \
