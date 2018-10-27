@@ -10,7 +10,7 @@ sleep 1
 FETCHPID=`/usr/bin/pgrep fetchmail`
 while [ -n "${FETCHPID}" ] ; do
 	sleep 5
-	read -p "$(date -u +"%b %d %H:%M:%S") $0 fetchmail is running - [RETURN]" | tee -a /var/log/mailserverstop.log
+	read -p "$(date -u +'%b %d %H:%M:%S') $0 fetchmail is running - [RETURN]" | tee -a /var/log/mailserverstop.log
 	FETCHPID=`/usr/bin/pgrep fetchmail`
 done
 sleep 2
@@ -18,7 +18,7 @@ FETCHPID=`/usr/bin/pgrep fetchmail`
 if [ -z "${FETCHPID}" ] ; then
 	MAILSERVERRUN=`/bin/ps ax | egrep 'postfix/sbin/.?master|cyr.?master'`
 	if [ -n "${MAILSERVERRUN}" ] ; then
-		echo "$(date -u +"%b %d %H:%M:%S") $0 stopping replication mailserver" | tee -a /var/log/mail.log
+		echo "$(date -u +'%b %d %H:%M:%S') $0 stopping replication mailserver" | tee -a /var/log/mail.log
 		/usr/sbin/postfix stop
 		sleep 2
 		service cyrus-imapd stop
