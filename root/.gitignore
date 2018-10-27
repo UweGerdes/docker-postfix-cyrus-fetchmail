@@ -1,2 +1,5 @@
 cyrususers
 rsyncusers
+hook.sh
+.*
+!.gitignore
