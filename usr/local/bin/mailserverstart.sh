@@ -1,11 +1,11 @@
 #!/bin/bash
 
 if [ "`whoami`" != "root" ] ; then
-	echo "script has to be started as user root"
+	echo "$0 has to be started as user root"
 	exit 1
 fi
 
-echo "starting replication mailserver"
+echo "$(date -u +"%b %d %H:%M:%S") $0 starting replication mailserver" | tee -a /var/log/mail.log
 service cyrus-imapd restart
 service postfix start
 rm /tmp/fetchstart.lock
