@@ -5,7 +5,7 @@ if [ "`whoami`" != "root" ] ; then
 	exit 1
 fi
 
-echo "$(date -u +'%b %d %H:%M:%S') $0 starting replication mailserver" | tee -a /var/log/mail.log
+echo "$(date -u +'%b %d %H:%M:%S') $0 starting mailserver" | tee -a /var/log/mail.log
 service cyrus-imapd restart
 service postfix start
 rm /tmp/fetchstart.lock

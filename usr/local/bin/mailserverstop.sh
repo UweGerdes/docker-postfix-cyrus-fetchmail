@@ -18,12 +18,12 @@ FETCHPID=`/usr/bin/pgrep fetchmail`
 if [ -z "${FETCHPID}" ] ; then
 	MAILSERVERRUN=`/bin/ps ax | egrep 'postfix/sbin/.?master|cyr.?master'`
 	if [ -n "${MAILSERVERRUN}" ] ; then
-		echo "$(date -u +'%b %d %H:%M:%S') $0 stopping replication mailserver" | tee -a /var/log/mail.log
+		echo "$(date -u +'%b %d %H:%M:%S') $0 stopping mailserver" | tee -a /var/log/mail.log
 		/usr/sbin/postfix stop
 		sleep 2
 		service cyrus-imapd stop
 		sleep 2
 	else
-		echo "kein Stop des Mail-Systems"
+		echo "$(date -u +'%b %d %H:%M:%S') $0 mailserver not running" | tee -a /var/log/mail.log
 	fi
 fi
