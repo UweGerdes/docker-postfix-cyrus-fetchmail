@@ -88,6 +88,7 @@ RUN postconf -e myorigin=/etc/mailname && \
 		-e 's/(\s)#(imaps\s+cmd="imapd -s -U 30")/\1\2/' \
 		-e 's/(\s)(nntp\s)/\1#\2/' \
 		-e 's/(\s)(http\s)/\1#\2/' \
+		-e 's/(\s)(delprune\s)/\1#\2/' \
 		-e 's/(\s)(sieve\s)/\1#\2/' /etc/cyrus.conf && \
 	sed -i -r \
 		-e 's/#(admins: cyrus)/\1/' \
@@ -99,7 +100,9 @@ RUN postconf -e myorigin=/etc/mailname && \
 		-e 's/^(module\(load="imklog")/#\1/' /etc/rsyslog.conf && \
 	sed -i -r \
 		-e 's/^START=no/START=yes/' \
-		-e 's/^MECHANISMS=".+"/MECHANISMS="sasldb"/' /etc/default/saslauthd
+		-e 's/^MECHANISMS=".+"/MECHANISMS="sasldb"/' /etc/default/saslauthd && \
+	sed -i -r \
+		-e 's/^exit .+/exit 0/' /usr/sbin/policy-rc.d
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
