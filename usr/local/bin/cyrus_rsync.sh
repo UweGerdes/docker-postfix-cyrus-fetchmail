@@ -17,15 +17,11 @@ if [ ! -f "/root/rsyncusers.${TARGETHOST}" ] ; then
 	exit 1
 fi
 
-echo "stop" > /tmp/fetchstart.lock
-sleep 1
-FETCHPID=`/usr/bin/pgrep fetchmail`
-while [ -n "${FETCHPID}" ] ; do
-	sleep 5
-	read -p "fetchmail is running - [RETURN]"
-	FETCHPID=`/usr/bin/pgrep fetchmail`
-done
-sleep 2
+echo "Try connection to ${TARGETHOST}"
+sudo -u cyrus ssh -p 61022 cyrus@${TARGETHOST} echo "connection established"
+
+/usr/local/bin/mailserverstop.sh
+
 FETCHPID=`/usr/bin/pgrep fetchmail`
 if [ -z "${FETCHPID}" ] ; then
 	sudo -u cyrus ssh -p 61022 cyrus@${TARGETHOST} sudo /usr/local/bin/mailserverstop.sh
@@ -53,9 +49,7 @@ if [ -z "${FETCHPID}" ] ; then
 		fi
 	done < "/root/rsyncusers.${TARGETHOST}"
 
-	echo "starting mailserver"
-	service cyrus-imapd restart
-	service postfix restart
+	/usr/local/bin/mailserverstart.sh
 	sudo -u cyrus ssh -p 61022 cyrus@${TARGETHOST} sudo /usr/local/bin/mailserverstart.sh
 else
 	echo "mailserver not stopped, fetchmail running with PID ${FETCHPID}"
