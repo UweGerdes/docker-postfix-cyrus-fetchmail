@@ -12,15 +12,10 @@ if [ -z "${TARGETHOST}" ] ; then
 	exit 2
 fi
 
-if [ ! -f "/root/rsyncusers.${TARGETHOST}" ] ; then
-	echo "${0} missing file: /root/rsyncusers.${TARGETHOST} - are you on a replicated system?"
-	exit 3
-fi
-
 /usr/local/bin/check_targethost.sh ${TARGETHOST}
 if [ $? > 0 ] ; then
 	echo "${0} connection to ${TARGETHOST} not established"
-	exit 4
+	exit 3
 fi
 
 /usr/local/bin/mailserverstop.sh
@@ -34,8 +29,6 @@ if [ -z "${FETCHPID}" ] ; then
 
 	# cyrus mail files
 	sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogzi "/var/spool/cyrus/mail/" "${TARGETHOST}:/var/spool/cyrus/mail"
-		fi
-	done < "/root/rsyncusers.${TARGETHOST}"
 
 	/usr/local/bin/mailserverstart.sh
 	sudo -u cyrus ssh -p 61022 cyrus@${TARGETHOST} sudo /usr/local/bin/mailserverstart.sh
