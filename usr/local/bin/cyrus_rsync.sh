@@ -38,6 +38,4 @@ else
 	echo "starting mailserver"
 fi
 
-rm /tmp/fetchstart.lock
-
 exit 0
