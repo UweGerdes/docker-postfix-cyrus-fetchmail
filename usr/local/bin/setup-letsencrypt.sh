@@ -31,6 +31,11 @@ if [ -x "/root/authenticator.sh" ] ; then
 	chgrp -R ssl-cert /etc/letsencrypt/live /etc/letsencrypt/archive
 	chmod 750 /etc/letsencrypt/live /etc/letsencrypt/archive
 	sed -i -r -e "s/^(tls_server_cert:).+/\1 \/etc\/letsencrypt\/live\/$CERTBOT_DOMAIN\/cert.pem/" -e "s/^(tls_server_key:).+/\1 \/etc\/letsencrypt\/live\/$CERTBOT_DOMAIN\/privkey.pem\ntls_server_ca_file: \/etc\/letsencrypt\/live\/$CERTBOT_DOMAIN\/chain.pem/" /etc/imapd.conf
+	postconf -e smtpd_tls_security_level=may
+	postconf -e smtp_tls_security_level=may
+	postconf -e smtp_tls_note_starttls_offer=yes
+	postconf -e smtpd_tls_loglevel=1
+	postconf -e smtpd_tls_received_header=yes
 	cd "${PREV_DIR}"
 else
 	echo "/root/authenticator.sh not found"
