@@ -7,7 +7,7 @@ use strict;
 @local_domains_acl = qw(.);
 $log_level = 3;
 
-read_hash(\%whitelist_sender, '/etc/amavisd/whitelist');
+read_hash(\%whitelist_sender, '/etc/amavis/whitelist');
 @whitelist_sender_maps = (\%whitelist_sender);
 
 $interface_policy{'10026'} = 'VIRUSONLY';
