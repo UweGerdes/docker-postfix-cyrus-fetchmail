@@ -1,0 +1,21 @@
+use strict;
+
+#
+# extra file for docker environment
+#
+
+@local_domains_acl = qw(.);
+$log_level = 3;
+
+read_hash(\%whitelist_sender, '/etc/amavisd/whitelist');
+@whitelist_sender_maps = (\%whitelist_sender);
+
+$interface_policy{'10026'} = 'VIRUSONLY';
+$policy_bank{'VIRUSONLY'} = { # mail from the pickup daemon
+    bypass_spam_checks_maps   => ['@whitelist_sender_maps'],  # don't spam-check this mail
+    bypass_banned_checks_maps => ['@whitelist_sender_maps'],  # don't banned-check this mail
+    bypass_header_checks_maps => ['@whitelist_sender_maps'],  # don't header-check this mail
+};
+
+#------------ Do not modify anything below this line -------------
+1;  # ensure a defined return

@@ -148,8 +148,6 @@ RUN postconf -e myorigin=/etc/mailname && \
 	echo "	-o smtpd_client_connection_rate_limit=0" >> /etc/postfix/master.cf && \
 	echo "	-o receive_override_options=no_header_body_checks,no_unknown_recipient_checks" >> /etc/postfix/master.cf && \
 	sed -i -r \
-		-e 's/(#----)/@local_domains_acl = qw(.);\n$log_level = 3;\n\1/' /etc/amavis/conf.d/50-user && \
-	sed -i -r \
 		-e 's/(sa_tag_level_deflt\s+=).+;/\1 3;/' \
 		-e 's/(sa_tag2_level_deflt\s+=).+;/\1 3;/' \
 		-e 's/(sa_kill_level_deflt\s+=).+;/\1 2000;/' /etc/amavis/conf.d/20-debian_defaults

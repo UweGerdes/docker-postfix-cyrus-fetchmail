@@ -10,15 +10,9 @@ if [ -n "$(find "/var/spool/cyrus/mail/" -maxdepth 0 -type d -empty 2>/dev/null)
 	cp -rp /var/spool/cyrus/mail.init/* /var/spool/cyrus/mail/
 fi
 
-if [ "$(ls -ld /var/spool/cyrus/mail | awk '{print $3}')" != "cyrus" ]; then
-fi
-
 if [ -n "$(find "/var/lib/cyrus/" -maxdepth 0 -type d -empty 2>/dev/null)" ]; then
 	echo "populating /var/lib/cyrus directory"
 	cp -rp /var/lib/cyrus.init/* /var/lib/cyrus/
-fi
-
-if [ "$(ls -ld /var/lib/cyrus | awk '{print $3}')" != "cyrus" ]; then
 fi
 
 if [ ! -f "/var/lib/cyrus/tls_sessions.db" ]; then
@@ -26,8 +20,7 @@ if [ ! -f "/var/lib/cyrus/tls_sessions.db" ]; then
 fi
 
 chown -R postfix:mail /var/spool/postfix
-chown -R cyrus:mail /var/spool/cyrus/mail
-chown -R cyrus:mail /var/lib/cyrus
+chown -R cyrus:mail /var/spool/cyrus/mail /var/lib/cyrus
 
 if [ ! -f "/var/log/syslog" ]; then
 	chmod 777 /var/log
@@ -35,6 +28,11 @@ if [ ! -f "/var/log/syslog" ]; then
 	chown syslog:adm /var/log/syslog
 	touch /var/log/fetchmail.log
 	chmod 666 /var/log/fetchmail.log
+fi
+
+if [ ! -d "/var/log/clamav" ]; then
+	mkdir /var/log/clamav
+	chown clamav:clamav /var/log/clamav
 fi
 
 postfix set-permissions >/dev/null 2>&1
