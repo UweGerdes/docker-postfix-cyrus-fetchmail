@@ -36,6 +36,7 @@ if [ -x "/root/authenticator.sh" ] ; then
 	postconf -e smtp_tls_note_starttls_offer=yes
 	postconf -e smtpd_tls_loglevel=1
 	postconf -e smtpd_tls_received_header=yes
+	postconf -e smtpd_tls_CAfile=/etc/ssl/certs/ca-certificates.crt
 	cd "${PREV_DIR}"
 else
 	echo "/root/authenticator.sh not found"

@@ -4,12 +4,12 @@ FROM uwegerdes/baseimage
 MAINTAINER Uwe Gerdes <entwicklung@uwegerdes.de>
 
 ARG CRONTAB_MIN="0-55/5"
+ARG MAILNAME=mailserver.localdomain
 
-ENV MAILNAME=mailserver
-ENV FETCHMAILHOME=/root
-ENV FETCHMAILUSER=root
+ENV MAILNAME=${MAILNAME}
 
 RUN apt-get update && \
+	echo $(grep $(hostname) /etc/hosts | cut -f1) ${MAILNAME} >> /etc/hosts && \
 	apt-get install -y \
 		cron \
 		cyrus-admin \
@@ -24,7 +24,12 @@ RUN apt-get update && \
 		postfix \
 		rsync \
 		rsyslog \
-		sasl2-bin && \
+		sasl2-bin \
+		amavisd-new \
+		clamav-daemon \
+		pyzor\
+		razor \
+		spamassassin && \
 	apt-get clean && \
 	rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/*
 
@@ -60,11 +65,16 @@ RUN chmod 600 /etc/postfix/sasl_password && \
 	cp -rp /var/spool/cyrus/mail /var/spool/cyrus/mail.init && \
 	touch /var/lib/cyrus/tls_sessions.db && \
 	chown cyrus:mail /var/lib/cyrus/tls_sessions.db && \
-	cp -rp /var/lib/cyrus /var/lib/cyrus.init
+	cp -rp /var/lib/cyrus /var/lib/cyrus.init && \
+	adduser clamav amavis && \
+	adduser amavis clamav && \
+	sudo -H -u amavis razor-admin -create && \
+	sudo -H -u amavis razor-admin -register && \
+	freshclam
 
 RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e myhostname=$MAILNAME && \
-	postconf -e mydestination="$MAILNAME, $MAILNAME.localdomain, localhost.localdomain, localhost" && \
+	postconf -e mydestination="$MAILNAME, localhost.localdomain, localhost" && \
 	postconf -e relayhost=$(awk '{print $1}' /etc/postfix/sasl_password) && \
 	postconf -e mynetworks="127.0.0.0/8 192.168.1.0/24" && \
 	postconf -e message_size_limit=30720000 && \
@@ -79,6 +89,7 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e smtpd_sasl_security_options=noanonymous && \
 	postconf -e broken_sasl_auth_clients=yes && \
 	postconf -e smtpd_recipient_restrictions="permit_mynetworks, permit_sasl_authenticated, reject_unauth_destination" && \
+	postconf -e content_filter="smtp-amavis:[127.0.0.1]:10024" && \
 	sed -i -r \
 		-e 's/^#(smtps\s+inet.+smtpd)$/\1/' \
 		-e 's/^#(submission\s+inet.+smtpd)$/\1/' /etc/postfix/master.cf && \
@@ -105,7 +116,43 @@ RUN postconf -e myorigin=/etc/mailname && \
 		-e 's/^START=no/START=yes/' \
 		-e 's/^MECHANISMS=".+"/MECHANISMS="sasldb"/' /etc/default/saslauthd && \
 	sed -i -r \
-		-e 's/^exit .+/exit 0/' /usr/sbin/policy-rc.d
+		-e 's/#(@bypass_virus_checks_maps)/\1/' \
+		-e 's/#(.+%bypass_virus_checks)/\1/' \
+		-e 's/#(@bypass_spam_checks_maps)/\1/' \
+		-e 's/#(.+%bypass_spam_checks)/\1/' /etc/amavis/conf.d/15-content_filter_mode && \
+	sed -i -r \
+		-e 's/^(pickup.+)/\1\n    -o content_filter=\n    -o receive_override_options=no_header_body_checks/' /etc/postfix/master.cf && \
+	echo "smtp-amavis     unix    -       -       -       -       2       smtp" >> /etc/postfix/master.cf && \
+	echo "	-o smtp_data_done_timeout=1200" >> /etc/postfix/master.cf && \
+	echo "	-o smtp_send_xforward_command=yes" >> /etc/postfix/master.cf && \
+	echo "	-o disable_dns_lookups=yes" >> /etc/postfix/master.cf && \
+	echo "	-o max_use=20" >> /etc/postfix/master.cf && \
+	echo "" >> /etc/postfix/master.cf && \
+	echo "127.0.0.1:10025 inet    n       -       -       -       -       smtpd" >> /etc/postfix/master.cf && \
+	echo "	-o content_filter=" >> /etc/postfix/master.cf && \
+	echo "	-o local_recipient_maps=" >> /etc/postfix/master.cf && \
+	echo "	-o relay_recipient_maps=" >> /etc/postfix/master.cf && \
+	echo "	-o smtpd_restriction_classes=" >> /etc/postfix/master.cf && \
+	echo "	-o smtpd_delay_reject=no" >> /etc/postfix/master.cf && \
+	echo "	-o smtpd_client_restrictions=permit_mynetworks,reject" >> /etc/postfix/master.cf && \
+	echo "	-o smtpd_helo_restrictions=" >> /etc/postfix/master.cf && \
+	echo "	-o smtpd_sender_restrictions=" >> /etc/postfix/master.cf && \
+	echo "	-o smtpd_recipient_restrictions=permit_mynetworks,reject" >> /etc/postfix/master.cf && \
+	echo "	-o smtpd_data_restrictions=reject_unauth_pipelining" >> /etc/postfix/master.cf && \
+	echo "	-o smtpd_end_of_data_restrictions=" >> /etc/postfix/master.cf && \
+	echo "	-o mynetworks=127.0.0.0/8" >> /etc/postfix/master.cf && \
+	echo "	-o smtpd_error_sleep_time=0" >> /etc/postfix/master.cf && \
+	echo "	-o smtpd_soft_error_limit=1001" >> /etc/postfix/master.cf && \
+	echo "	-o smtpd_hard_error_limit=1000" >> /etc/postfix/master.cf && \
+	echo "	-o smtpd_client_connection_count_limit=0" >> /etc/postfix/master.cf && \
+	echo "	-o smtpd_client_connection_rate_limit=0" >> /etc/postfix/master.cf && \
+	echo "	-o receive_override_options=no_header_body_checks,no_unknown_recipient_checks" >> /etc/postfix/master.cf && \
+	sed -i -r \
+		-e 's/(#----)/@local_domains_acl = qw(.);\n$log_level = 3;\n\1/' /etc/amavis/conf.d/50-user && \
+	sed -i -r \
+		-e 's/(sa_tag_level_deflt\s+=).+;/\1 3;/' \
+		-e 's/(sa_tag2_level_deflt\s+=).+;/\1 3;/' \
+		-e 's/(sa_kill_level_deflt\s+=).+;/\1 2000;/' /etc/amavis/conf.d/20-debian_defaults
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 

@@ -3,25 +3,31 @@
 if [ -n "$(find "/var/spool/postfix/" -maxdepth 0 -type d -empty 2>/dev/null)" ]; then
 	echo "populating /var/spool/postfix directory"
 	cp -rp /var/spool/postfix.init/* /var/spool/postfix/
-	chown postfix:root /var/spool/postfix
 fi
 
 if [ -n "$(find "/var/spool/cyrus/mail/" -maxdepth 0 -type d -empty 2>/dev/null)" ]; then
 	echo "populating /var/spool/cyrus/mail directory"
 	cp -rp /var/spool/cyrus/mail.init/* /var/spool/cyrus/mail/
-	chown cyrus:mail /var/spool/cyrus/mail
+fi
+
+if [ "$(ls -ld /var/spool/cyrus/mail | awk '{print $3}')" != "cyrus" ]; then
 fi
 
 if [ -n "$(find "/var/lib/cyrus/" -maxdepth 0 -type d -empty 2>/dev/null)" ]; then
 	echo "populating /var/lib/cyrus directory"
 	cp -rp /var/lib/cyrus.init/* /var/lib/cyrus/
-	chown cyrus:mail /var/lib/cyrus
+fi
+
+if [ "$(ls -ld /var/lib/cyrus | awk '{print $3}')" != "cyrus" ]; then
 fi
 
 if [ ! -f "/var/lib/cyrus/tls_sessions.db" ]; then
 	touch /var/lib/cyrus/tls_sessions.db
-	chown cyrus:mail /var/lib/cyrus/tls_sessions.db
 fi
+
+chown -R postfix:mail /var/spool/postfix
+chown -R cyrus:mail /var/spool/cyrus/mail
+chown -R cyrus:mail /var/lib/cyrus
 
 if [ ! -f "/var/log/syslog" ]; then
 	chmod 777 /var/log
@@ -38,8 +44,11 @@ service rsyslog start
 service cron start
 service ssh start
 service saslauthd start
-service cyrus-imapd restart
+service cyrus-imapd start
 service postfix start
+service clamav-daemon start
+freshclam
+service amavis start
 
 if [ -z "$(sasldblistusers2)" ]; then
 	CYRUSPASS=cyrpasswd

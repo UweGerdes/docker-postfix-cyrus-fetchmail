@@ -28,7 +28,7 @@ Run the mailserver container with:
 $ docker run -d \
 	--restart always \
 	--name mailserver \
-	--hostname mailserver \
+	--hostname mailserver.localdomain \
 	-p 61022:22 \
 	-p 61025:25 \
 	-p 61110:110 \
