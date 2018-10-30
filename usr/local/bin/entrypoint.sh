@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# initial blocking of fetchmail
+echo "stop" > /tmp/fetchstart.lock
+
 if [ -n "$(find "/var/spool/postfix/" -maxdepth 0 -type d -empty 2>/dev/null)" ]; then
 	echo "populating /var/spool/postfix directory"
 	cp -rp /var/spool/postfix.init/* /var/spool/postfix/
@@ -64,5 +67,8 @@ if [ -z "$(sasldblistusers2)" ]; then
 		fi
 	done < "/root/cyrususers"
 fi
+
+# remove initial blocking of fetchmail
+rm /tmp/fetchstart.lock
 
 exec "$@"
