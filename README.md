@@ -8,6 +8,8 @@ Copy the `*.sample` files to files without the `.sample` extension and edit them
 
 Check other files and perhaps add some settings. You might want to `git update-index --assume-unchanged etc/aliases` to keep changes out of git.
 
+See below for details of the configuration.
+
 ## Build
 
 Build the image with (mind the dot):
@@ -61,28 +63,65 @@ $ docker start mailserver
 
 ## Configuration
 
-This installation delivers mail to the users listed in etc/aliases. You can also put .foward files in home directories. To use other distribution methods (LDAP, MySQL...) make your own docker and tell me. ;-)
+### `var/lib/fetchmail/fetchmailrc`
 
-To use TLS with keys that survive recreation of the image copy ssl-cert-snakeoil.pem and ssl-cert-snakeoil.key from a container and put them in subdirectories in `etc/ssl` - and restrict access.
+This is the receiving part of the mailserver - change the server name, username and password to match your mail provider. Multiple user entries and other severs can be included.
 
+The mail is handed over to `mailbox` at `etc/aliases`.
 
-## Cyrus mail backup and restore
+You should make sure to set `chmod 600 var/lib/fetchmail/fetchmailrc` to have a bit of protection for the password.
 
-The prompt of the docker container is the same on the master and replication - please make shure you enter the commands in the desired docker container!
+### `etc/aliases`
 
-You may want to use key based login to avoid password input. The generated key file is copied to remote docker container - please accept fingerprint and enter password on remote mailhost2 (the network name of the computer running the docker mailserver container):
+This installation delivers mail to the users listed in `etc/aliases`. You can also put `.foward` files in home directories. To use other distribution methods (LDAP, MySQL...) make your own docker and tell me. ;-)
 
-```bash
-$ docker exec -it mailserver sudo -H -u cyrus sh -c "ssh-keygen -t rsa -C cyrus@mailserver -N '' -f ~/.ssh/id_rsa && ssh-copy-id -i ~/.ssh/id_rsa.pub -p 61022 cyrus@mailhost2"
-```
+The file `etc/aliases` contains some redirections to user `root`, then to `mailbox` (where also the fetchmail points to) and get delivered to `user2` and `mailbackup`. Those mailboxes are configured by `root/cyrususers`.
 
-Command for replication:
+### `root/cyrususers`
+
+This file contains users and passwords for the cyrus environment. A user `cyrus` is needed for configuration (it gets no mailbox), `mailbox` receives mails (it is not really in use). Other users get mailboxes and a password (stored with `saslpasswd2`) so they can access their mailbox with IMAP and POP3.
+
+Apply `chmod 600 root/cyrususers` to that file.
+
+### `etc/postfix/sender_canonical`
+
+For outgoing mail the user root get the mail addess you specify here. You mail client supports sending with defined addresses but internal mails (from `cron` or `amavis`) should use a valid sender address.
+
+### `etc/postfix/sasl_password`
+
+To allow sending to your mail provider you need the credentials in this file.
+
+Apply `chmod 600 root/cyrususers` to that file.
+
+### `etc/amavis/whitelist`
+
+If you receive mail from users or servers that should not be spam checked please add the mail address or domain name (without @) to this file.
+
+If you don't want to whitelist please add an empty file to avoid error messages.
+
+### TLS
+
+To use TLS with keys that survive recreation of the image copy ssl-cert-snakeoil.pem and ssl-cert-snakeoil.key (both are text files) from a container and put them in subdirectories in `etc/ssl` - and restrict access.
+
+This doesn't apply if you use SSL (with Let's Encrypt or others) with your own domain name (see below).
+
+## Commands
+
+### Cyrus mail replication
+
+You should install a second mailserver in your local network on another computer. The mailboxes can be copied from your mailserver (master) to mailserver2 (replication). Please make shure you execute the commands in the desired docker container - `mailhost` and `mailhost2` are the names of the computer (in your local network) running the docker containers.
+
+In my network the master mailserver runs on a Raspberry Pi 3, the replication mailserver runs on my laptop.
+
+On the first run key based login (for user `cyrus`) is activated from master to replication. You must accept the fingerprint, are asked to login (which should last more than 5 seconds, use `cyrus` password of mailserver2) and the hit RETURN to generate a key and then login again to copy the key. From now on the user `cyrus` should not be asked to enter a password when connecting from master to replication. It is not recommended to have key based login from replication to master - you will not want to overwrite the master with the replication (except in case of corrupted master mailboxes).
+
+Command for replication (issued on master `mailhost`):
 
 ```bash
 $ docker exec -it mailserver cyrus_rsync.sh mailhost2
 ```
 
-If you set up a copy mailbox for each user you can use fetchmail on the replication mailserver to load the newest mails and have a nearly syncronous replicatation (mails are not copied to subfolders if the mailclient does so - but at least the mails are saved if the main mailserver deletes all the data). They will be overwritten on the next `cyrus_rsync.sh` - this is intended.
+If you set up a copy mailbox for each user (see above: `etc/aliases`, add `, usercopy`) you can use fetchmail on the replication mailserver to load the newest mails from the master and have a nearly syncronous replicatation (mails are not copied to subfolders if the mailclient does so on the master - but at least the mails are saved if the master mailserver crashes the mailboxes). They mailboxes will be overwritten on the next `cyrus_rsync.sh` - this is intended.
 
 You should think about setting different times for the fetchmail cronjob in `Dockerfile` for the replication mailserver (see `CRONTAB_MIN` above).
 
