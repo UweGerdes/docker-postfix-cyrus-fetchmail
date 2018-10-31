@@ -63,7 +63,7 @@ if [ -z "$(sasldblistusers2)" ]; then
 		fi
 		if [ $user != "cyrus" -a ! -d "/var/spool/cyrus/mail/${user:0:1}/user/${user}" ]; then
 			echo "create mailbox for $user"
-			echo "cm user.${user}" | cyradm --user cyrus -w ${CYRUSPASS} --server mailserver > /dev/null
+			echo "cm user.${user}" | cyradm --user cyrus -w ${CYRUSPASS} --server localhost > /dev/null
 		fi
 	done < "/root/cyrususers"
 fi

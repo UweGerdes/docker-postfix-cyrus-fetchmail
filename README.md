@@ -157,7 +157,7 @@ Now build the image with an additional `--build-arg MAILNAME=your.domain.com` an
 The setup for Let's Encrypt certificate is done with:
 
 ```bash
-$ docker exec -it mailserver setup-letsencrypt.sh
+$ docker exec -it mailserver /root/setup-letsencrypt.sh
 ```
 
 Answer the questions from Let's Encrypt and if everything is ok your certificates will be automatically updated in the future (including mailserver restart on certificate update).
