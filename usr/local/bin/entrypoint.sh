@@ -23,7 +23,7 @@ if [ ! -f "/var/lib/cyrus/tls_sessions.db" ]; then
 fi
 
 chown -R postfix:mail /var/spool/postfix
-chown -R cyrus:mail /var/spool/cyrus/mail /var/lib/cyrus
+chown -R cyrus:mail /var/spool/cyrus/mail /var/spool/sieve /var/lib/cyrus
 
 if [ ! -f "/var/log/syslog" ]; then
 	chmod 777 /var/log

@@ -15,7 +15,7 @@ See below for details of the configuration.
 Build the image with (mind the dot):
 
 ```bash
-$ docker build -t uwegerdes/mailserver --build-arg CRONTAB_MIN="4-59/5" .
+$ docker build -t uwegerdes/mailserver .
 ```
 
 `CRONTAB_MIN` is the minutes entry for `/etc/crontab` when fetchmail will be started.
@@ -42,6 +42,7 @@ $ docker run -d \
 	--volume /srv/docker/mailserver/postfix:/var/spool/postfix \
 	--volume /srv/docker/mailserver/cyrus/mail:/var/spool/cyrus/mail \
 	--volume /srv/docker/mailserver/cyrus/lib:/var/lib/cyrus \
+	--volume /srv/docker/mailserver/sieve:/var/spool/sieve \
 	--volume /srv/docker/mailserver/log:/var/log \
 	--dns 192.168.178.1 \
 	uwegerdes/mailserver
@@ -79,7 +80,7 @@ The file `etc/aliases` contains some redirections to user `root`, then to `mailb
 
 ### `root/cyrususers`
 
-This file contains users and passwords for the cyrus environment. A user `cyrus` is needed for configuration (it gets no mailbox), `mailbox` receives mails (it is not really in use). Other users get mailboxes and a password (stored with `saslpasswd2`) so they can access their mailbox with IMAP and POP3.
+This file contains users and passwords for the cyrus environment. A user `cyrus` is needed for configuration (it gets no mailbox), `mailbox` receives mails (it is not really in use). Other users get mailboxes and a password (stored with `saslpasswd2`) so they can access their mailbox with IMAP and POP3. They can also install `sieve` scripts.
 
 Apply `chmod 600 root/cyrususers` to that file.
 
@@ -121,6 +122,8 @@ In my network the master mailserver runs on a Raspberry Pi 3, the replication ma
 
 On the first run key based login (for user `cyrus`) is activated from master to replication. You must accept the fingerprint, are asked to login (which should last more than 5 seconds, use `cyrus` password of mailserver2) and the hit RETURN to generate a key and then login again to copy the key. From now on the user `cyrus` should not be asked to enter a password when connecting from master to replication. It is not recommended to have key based login from replication to master - you will not want to overwrite the master with the replication (except in case of corrupted master mailboxes).
 
+You may want to add a `--build-arg CRONTAB_MIN="1-56/5"` to the docker build command on the replication host, mails are loaded one minute after they have been received on the master mailserver.
+
 Command for replication (issued on master `mailhost`):
 
 ```bash
@@ -149,7 +152,7 @@ Perhaps some changes are needed in `/root/setup-letsencrypt.sh`.
 
 See the [certbot](https://certbot.eff.org/docs/) documentation for more details.
 
-Now build the image and run the mailserver container.
+Now build the image with an additional `--build-arg MAILNAME=your.domain.com` and run the mailserver container.
 
 The setup for Let's Encrypt certificate is done with:
 
