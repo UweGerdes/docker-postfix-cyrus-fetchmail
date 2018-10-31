@@ -10,6 +10,7 @@ ENV MAILNAME=${MAILNAME}
 
 RUN apt-get update && \
 	echo $(grep $(hostname) /etc/hosts | cut -f1) ${MAILNAME} >> /etc/hosts && \
+	apt-get dist-upgrade -y && \
 	apt-get install -y \
 		cron \
 		cyrus-admin \
