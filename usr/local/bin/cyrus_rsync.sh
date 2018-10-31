@@ -13,9 +13,10 @@ if [ -z "${TARGETHOST}" ] ; then
 fi
 
 /usr/local/bin/check_targethost.sh ${TARGETHOST}
-if [[ ( $? > 0 ) ]] ; then
+CHECKRESULT=$?
+if (( "${CHECKRESULT}" > 0 )) ; then
 	echo "${0} connection to ${TARGETHOST} not established"
-	exit $?
+	exit ${CHECKRESULT}
 fi
 
 /usr/local/bin/mailserverstop.sh
