@@ -14,4 +14,4 @@ security: root
 postfix: root
 amavis: root
 root: mailbox
-mailbox: uweimap, mailbackup
+mailbox: user2, mailbackup
