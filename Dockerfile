@@ -103,7 +103,7 @@ RUN postconf -e myorigin=/etc/mailname && \
 		-e 's/(\s)(nntp\s)/\1#\2/' \
 		-e 's/(\s)(http\s)/\1#\2/' \
 		-e 's/(\s)(delprune\s)/\1#\2/' \
-		-e 's/(\s)(sieve\s)/\1#\2/' /etc/cyrus.conf && \
+		-e 's/(\ssieve\s.+)localhost:/\1/' /etc/cyrus.conf && \
 	sed -i -r \
 		-e 's/#(admins: cyrus)/\1/' \
 		-e 's/#(sasl_mech_list: PLAIN)/\1/' \

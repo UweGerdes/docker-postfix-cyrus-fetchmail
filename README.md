@@ -36,6 +36,7 @@ $ docker run -d \
 	-p 61465:465 \
 	-p 61587:587 \
 	-p 61993:993 \
+	-p 61190:4190 \
 	--volume /srv/docker/mailserver/postfix:/var/spool/postfix \
 	--volume /srv/docker/mailserver/cyrus/mail:/var/spool/cyrus/mail \
 	--volume /srv/docker/mailserver/cyrus/lib:/var/lib/cyrus \
@@ -108,4 +109,4 @@ For `certbot` a post-deploy-hook should send a mail.
 
 ## Logs
 
-You find the logs in the mounted volume `/srv/docker/mailserver/log` (see `docker run` command.
+You find the logs in the mounted volume `/srv/docker/mailserver/log` (see `docker run` command).
