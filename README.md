@@ -105,6 +105,12 @@ To use TLS with keys that survive recreation of the image copy ssl-cert-snakeoil
 
 This doesn't apply if you use SSL (with Let's Encrypt or others) with your own domain name (see below).
 
+### SSL
+
+If you have a mailserver container it has it's own ssl-sert-snakeoil certificates - you may want to copy the files to a mounted volume and add them to the respective locations in this projects directory `etc/ssl/`.
+
+They are reused on the next `docker build` and your mail clients should only comply on the first connection to the mailserver with that certificate.
+
 ## Commands
 
 ### Cyrus mail replication
@@ -125,26 +131,37 @@ If you set up a copy mailbox for each user (see above: `etc/aliases`, add `, use
 
 You should think about setting different times for the fetchmail cronjob in `Dockerfile` for the replication mailserver (see `CRONTAB_MIN` above).
 
-## SSL
+### Cyrus mailbox reconstruction
 
-If you have a mailserver container it has it's own ssl-sert-snakeoil certificates - you may want to copy the files to a mounted volume and add them to the respective locations in this projects directory `etc/ssl/`. They are reused on the next `docker build` and your mail clients should only comply on the first connection to the mailserver with that certificate.
-
-### Let's Encrypt
-
-I've set up Let's Encrypt `certbot` on the host running the mailserver so I can include the files in the `docker run` command:
+Perhaps you want to reconstruct the cyrus mailboxes (this is usually not needed - but in case...):
 
 ```bash
-	--volume /etc/letsencrypt:/etc/letsencrypt \
+$ docker exec -it mailserver reconstruct.sh
 ```
 
-Or build your image with a `/root/authenticator.sh` to be used as `certbot --manual-auth-hook` script - I'm using it with a desec.io dynamic dns and they provide a hook.sh script. Then create a `/root/.certbot` with a line `CERTBOT_DOMAIN=your.domain.com` and build a new image.
+## Setup Let's Encrypt
+
+If you build your image with a `/root/authenticator.sh` to be used as `certbot --manual-auth-hook` script (I'm using it with a desec.io dynamic dns and they provide a `hook.sh` script and a `.dedynauth` for the credentials) you can use a valid certificate.
+
+You will also need a `/root/.certbot` with a line `CERTBOT_DOMAIN=your.domain.com`.
 
 Perhaps some changes are needed in `/root/setup-letsencrypt.sh`.
 
-Now install `certbot` and your Let's Encrypt certificate with `setup-letsencrypt.sh`. Setup for `cyrus` is included.
+See the [certbot](https://certbot.eff.org/docs/) documentation for more details.
 
-TODO: Some modifications and symbolic links for `postfix` is required.
-For `certbot` a post-deploy-hook should send a mail.
+Now build the image and run the mailserver container.
+
+The setup for Let's Encrypt certificate is done with:
+
+```bash
+$ docker exec -it mailserver setup-letsencrypt.sh
+```
+
+Answer the questions from Let's Encrypt and if everything is ok your certificates will be automatically updated in the future (including mailserver restart on certificate update).
+
+Setup for `cyrus` and `postfix` is included in the script.
+
+TODO: For `certbot` the post-deploy.sh should send a mail.
 
 ## Logs
 
