@@ -164,6 +164,8 @@ Answer the questions from Let's Encrypt and if everything is ok your certificate
 
 Setup for `cyrus` and `postfix` is included in the script.
 
+Let's Encrypt has a weekly limit of certificate generation - this is reset if you add a different domain (subdomain) in the certbot call.
+
 TODO: For `certbot` the post-deploy.sh should send a mail.
 
 ## Logs
