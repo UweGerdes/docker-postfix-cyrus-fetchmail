@@ -114,6 +114,8 @@ RUN postconf -e myorigin=/etc/mailname && \
 	sed -i -r \
 		-e 's/^(module\(load="imklog")/#\1/' /etc/rsyslog.conf && \
 	sed -i -r \
+		-e 's/^(.+delaycompress)/\1\n\t\tcopytruncate/' /etc/logrotate.d/rsyslog && \
+	sed -i -r \
 		-e 's/^START=no/START=yes/' \
 		-e 's/^MECHANISMS=".+"/MECHANISMS="sasldb"/' /etc/default/saslauthd && \
 	sed -i -r \
