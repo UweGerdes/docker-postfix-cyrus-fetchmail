@@ -116,6 +116,10 @@ RUN postconf -e myorigin=/etc/mailname && \
 	sed -i -r \
 		-e 's/^(.+delaycompress)/\1\n\t\tcopytruncate/' /etc/logrotate.d/rsyslog && \
 	sed -i -r \
+		-e 's/^(.+delaycompress)/\1\n\t\tcopytruncate/' /etc/logrotate.d/clamav-daemon && \
+	sed -i -r \
+		-e 's/^(.+delaycompress)/\1\n\t\tcopytruncate/' /etc/logrotate.d/clamav-freshclam && \
+	sed -i -r \
 		-e 's/^START=no/START=yes/' \
 		-e 's/^MECHANISMS=".+"/MECHANISMS="sasldb"/' /etc/default/saslauthd && \
 	sed -i -r \
