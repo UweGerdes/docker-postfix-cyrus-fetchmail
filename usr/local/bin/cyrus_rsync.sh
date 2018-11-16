@@ -31,6 +31,9 @@ if [ -z "${FETCHPID}" ] ; then
 	# cyrus mail files
 	sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogzi "/var/spool/cyrus/mail/" "${TARGETHOST}:/var/spool/cyrus/mail"
 
+	# sieve script files
+	sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogzi "/var/spool/sieve/" "${TARGETHOST}:/var/spool/sieve"
+
 	/usr/local/bin/mailserverstart.sh
 	sudo -u cyrus ssh -p 61022 cyrus@${TARGETHOST} sudo /usr/local/bin/mailserverstart.sh
 else
