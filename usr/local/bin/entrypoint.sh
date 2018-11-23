@@ -22,13 +22,19 @@ if [ ! -f "/var/lib/cyrus/tls_sessions.db" ]; then
 	touch /var/lib/cyrus/tls_sessions.db
 fi
 
-chown -R postfix:mail /var/spool/postfix
-chown -R cyrus:mail /var/spool/cyrus/mail /var/spool/sieve /var/lib/cyrus
+chown -R postfix:root /var/spool/postfix/active /var/spool/postfix/bounce /var/spool/postfix/corrupt /var/spool/postfix/defer /var/spool/postfix/deferred /var/spool/postfix/flush /var/spool/postfix/incoming /var/spool/postfix/private  /var/spool/postfix/saved
+chown -R root:root /var/spool/postfix/dev /var/spool/postfix/etc /var/spool/postfix/lib /var/spool/postfix/pid /var/spool/postfix/usr
+chown -R postfix:postdrop /var/spool/postfix/maildrop
+chmod o+t /var/spool/postfix/maildrop
+chown -R cyrus:mail /var/spool/cyrus/mail/* /var/spool/sieve/* /var/lib/cyrus/*
 
 if [ ! -f "/var/log/syslog" ]; then
 	chmod 777 /var/log
 	touch /var/log/syslog
 	chown syslog:adm /var/log/syslog
+fi
+
+if [ ! -f "/var/log/fetchmail.log" ]; then
 	touch /var/log/fetchmail.log
 	chmod 666 /var/log/fetchmail.log
 fi
