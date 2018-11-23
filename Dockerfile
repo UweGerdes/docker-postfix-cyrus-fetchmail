@@ -76,13 +76,14 @@ RUN chmod 600 /etc/postfix/sasl_password && \
 RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e myhostname=$MAILNAME && \
 	postconf -e mydestination="$MAILNAME, localhost.localdomain, localhost" && \
-	postconf -e relayhost=$(awk '{print $1}' /etc/postfix/sasl_password) && \
+	postconf -e relayhost=[$(awk '{print $1}']:587 /etc/postfix/sasl_password) && \
 	postconf -e mynetworks="127.0.0.0/8 192.168.1.0/24" && \
 	postconf -e message_size_limit=30720000 && \
 	postconf -e inet_protocols=ipv4 && \
 	postconf -e smtp_sasl_auth_enable=yes && \
 	postconf -e smtp_sasl_security_options=noanonymous && \
 	postconf -e smtp_sasl_password_maps=hash:/etc/postfix/sasl_password && \
+	postconf -e smtp_tls_loglevel=1 && \
 	postconf -e sender_canonical_maps=hash:/etc/postfix/sender_canonical && \
 	postconf -e mailbox_transport=lmtp:unix:/var/run/cyrus/socket/lmtp && \
 	postconf -e smtpd_sasl_path=smtpd && \
@@ -134,6 +135,7 @@ RUN postconf -e myorigin=/etc/mailname && \
 	echo "	-o smtp_send_xforward_command=yes" >> /etc/postfix/master.cf && \
 	echo "	-o disable_dns_lookups=yes" >> /etc/postfix/master.cf && \
 	echo "	-o max_use=20" >> /etc/postfix/master.cf && \
+	echo "	-o smtp_tls_security_level=none" >> /etc/postfix/master.cf && \
 	echo "" >> /etc/postfix/master.cf && \
 	echo "127.0.0.1:10025 inet    n       -       -       -       -       smtpd" >> /etc/postfix/master.cf && \
 	echo "	-o content_filter=" >> /etc/postfix/master.cf && \
@@ -154,6 +156,7 @@ RUN postconf -e myorigin=/etc/mailname && \
 	echo "	-o smtpd_client_connection_count_limit=0" >> /etc/postfix/master.cf && \
 	echo "	-o smtpd_client_connection_rate_limit=0" >> /etc/postfix/master.cf && \
 	echo "	-o receive_override_options=no_header_body_checks,no_unknown_recipient_checks" >> /etc/postfix/master.cf && \
+	echo "	-o smtpd_tls_security_level=may" >> /etc/postfix/master.cf && \
 	sed -i -r \
 		-e 's/(sa_tag_level_deflt\s+=).+;/\1 3;/' \
 		-e 's/(sa_tag2_level_deflt\s+=).+;/\1 3;/' \
