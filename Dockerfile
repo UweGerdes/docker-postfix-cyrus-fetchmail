@@ -84,6 +84,7 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e smtp_sasl_security_options=noanonymous && \
 	postconf -e smtp_sasl_password_maps=hash:/etc/postfix/sasl_password && \
 	postconf -e smtp_tls_loglevel=1 && \
+	postconf -e smtp_tls_CAfile="/etc/ssl/certs/ca-certificates.crt" && \
 	postconf -e sender_canonical_maps=hash:/etc/postfix/sender_canonical && \
 	postconf -e mailbox_transport=lmtp:unix:/var/run/cyrus/socket/lmtp && \
 	postconf -e smtpd_sasl_path=smtpd && \
