@@ -76,7 +76,7 @@ RUN chmod 600 /etc/postfix/sasl_password && \
 RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e myhostname=$MAILNAME && \
 	postconf -e mydestination="$MAILNAME, localhost.localdomain, localhost" && \
-	postconf -e relayhost=[$(awk '{print $1}']:587 /etc/postfix/sasl_password) && \
+	postconf -e relayhost=$(awk '{print $1}' /etc/postfix/sasl_password) && \
 	postconf -e mynetworks="127.0.0.0/8 192.168.1.0/24" && \
 	postconf -e message_size_limit=30720000 && \
 	postconf -e inet_protocols=ipv4 && \
