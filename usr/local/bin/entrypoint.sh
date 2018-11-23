@@ -47,8 +47,8 @@ service ssh start
 service saslauthd start
 service cyrus-imapd start
 service postfix start
-service clamav-daemon start
 freshclam
+service clamav-daemon start
 service amavis start
 
 if [ -z "$(sasldblistusers2)" ]; then
