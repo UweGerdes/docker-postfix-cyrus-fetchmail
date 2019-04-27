@@ -15,6 +15,11 @@ if [ -z "$CERTBOT_DOMAIN" ]; then
 	exit 2
 fi
 
+if [ ! -f "/etc/letsencrypt/live/$CERTBOT_DOMAIN/cert.pem" ]; then
+	echo "File /etc/letsencrypt/live/$CERTBOT_DOMAIN/cert.pem not found. Installation failed."
+	exit 3
+fi
+
 if [ "$(ls -l /etc/letsencrypt/live/$CERTBOT_DOMAIN/cert.pem | awk '{print $4}')" != "ssl-cert" ] ; then
 	echo "$(date -u +'%b %d %H:%M:%S') $0 access rights for letsencrypt need update" | tee /var/log/mailserver.err
 	chgrp -R ssl-cert /etc/letsencrypt/live /etc/letsencrypt/archive
