@@ -38,6 +38,7 @@ $ docker run -d \
 	-p 61465:465 \
 	-p 61587:587 \
 	-p 61993:993 \
+	-p 61995:995 \
 	-p 61190:4190 \
 	--volume /srv/docker/mailserver/postfix:/var/spool/postfix \
 	--volume /srv/docker/mailserver/cyrus/mail:/var/spool/cyrus/mail \
@@ -49,6 +50,19 @@ $ docker run -d \
 ```
 
 I had to start the container on one computer with `--dns 192.168.178.1` - it didn't find the other system without DNS server. Reason: `/etc/resolv.conf` on host.
+
+The exposed ports are:
+```
+22/tcp   ssh (do not expose to web)
+25/tcp   smtp (perhaps unused, deliver from other clients without this hop)
+110/tcp  pop3 (only local network)
+143/tcp  imap (only local network)
+465/tcp  smtps (expose to web)
+587/tcp  smtp clients (perhaps unused)
+993/tcp  imaps (expose to web)
+995/tcp  pop3s (expose to web)
+4190/tcp sieve (perhaps expose to web)
+```
 
 To execute commands in the docker container enter:
 
@@ -152,7 +166,9 @@ Perhaps some changes are needed in `/root/setup-letsencrypt.sh`.
 
 See the [certbot](https://certbot.eff.org/docs/) documentation for more details.
 
-Now build the image with an additional `--build-arg MAILNAME=your.domain.com` and run the mailserver container.
+Now build the image with an additional `--build-arg MAILNAME=your.domain.com`.
+
+Run the mailserver container with `--hostname your.domain.com`.
 
 The setup for Let's Encrypt certificate is done with:
 

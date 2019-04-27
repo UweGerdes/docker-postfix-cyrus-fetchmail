@@ -77,7 +77,7 @@ RUN postconf -e myorigin=/etc/mailname && \
 	postconf -e myhostname=$MAILNAME && \
 	postconf -e mydestination="$MAILNAME, localhost.localdomain, localhost" && \
 	postconf -e relayhost=$(awk '{print $1}' /etc/postfix/sasl_password) && \
-	postconf -e mynetworks="127.0.0.0/8 192.168.1.0/24" && \
+	postconf -e mynetworks="127.0.0.0/8 192.168.0.0/16" && \
 	postconf -e message_size_limit=30720000 && \
 	postconf -e inet_protocols=ipv4 && \
 	postconf -e smtp_sasl_auth_enable=yes && \
@@ -165,6 +165,7 @@ RUN postconf -e myorigin=/etc/mailname && \
 
 ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 
-EXPOSE 22/tcp 25/tcp 110/tcp 143/tcp 465/tcp 587/tcp 993/tcp
+#      ssh    smtp   pop3    imap    smtps   smtp_cl imaps   pop3s   sieve
+EXPOSE 22/tcp 25/tcp 110/tcp 143/tcp 465/tcp 587/tcp 993/tcp 995/tcp 4190/tcp
 
 CMD ["/usr/local/bin/start.sh"]
