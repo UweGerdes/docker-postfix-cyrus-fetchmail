@@ -27,10 +27,16 @@ if [ -x "/root/authenticator.sh" ] ; then
 	apt-get install -y bind9-host certbot
 	PREV_DIR="$(pwd)"
 	cd /root
-	certbot --manual --text --preferred-challenges dns --manual-auth-hook /root/authenticator.sh --pre-hook /root/pre-hook.sh --post-hook /root/post-hook.sh -d "$CERTBOT_DOMAIN" certonly
-	chgrp -R ssl-cert /etc/letsencrypt/live /etc/letsencrypt/archive
-	chmod 750 /etc/letsencrypt/live /etc/letsencrypt/archive
-	sed -i -r -e "s/^(tls_server_cert:).+/\1 \/etc\/letsencrypt\/live\/$CERTBOT_DOMAIN\/fullchain.pem/" -e "s/^(tls_server_key:).+/\1 \/etc\/letsencrypt\/live\/$CERTBOT_DOMAIN\/privkey.pem/" /etc/imapd.conf
+	certbot --manual --text --preferred-challenges dns \
+		--manual-auth-hook /root/authenticator.sh \
+		--pre-hook /root/pre-hook.sh \
+		--post-hook /root/post-hook.sh \
+		-d "$CERTBOT_DOMAIN" \
+		certonly
+	sed -i -r \
+		-e "s/^(tls_server_cert:).+/\1 \/etc\/letsencrypt\/live\/$CERTBOT_DOMAIN\/fullchain.pem/" \
+		-e "s/^(tls_server_key:).+/\1 \/etc\/letsencrypt\/live\/$CERTBOT_DOMAIN\/privkey.pem/" \
+		/etc/imapd.conf
 	postconf -e smtpd_tls_security_level=may
 	postconf -e smtp_tls_security_level=may
 	postconf -e smtp_tls_note_starttls_offer=yes
