@@ -103,6 +103,7 @@ RUN postconf -e myorigin=/etc/mailname && \
 	sed -i -r \
 		-e 's/(\s)#(idled\s)/\1\2/' \
 		-e 's/(\s)#(imaps\s+cmd="imapd -s -U 30")/\1\2/' \
+		-e 's/(\s)#(pop3s\s+cmd="pop3d -s -U 30")/\1\2/' \
 		-e 's/(\s)(nntp\s)/\1#\2/' \
 		-e 's/(\s)(http\s)/\1#\2/' \
 		-e 's/(\s)(delprune\s)/\1#\2/' \
