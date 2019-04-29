@@ -26,7 +26,7 @@ chown -R postfix:root /var/spool/postfix/active /var/spool/postfix/bounce /var/s
 chown -R root:root /var/spool/postfix/dev /var/spool/postfix/etc /var/spool/postfix/lib /var/spool/postfix/pid /var/spool/postfix/usr
 chown -R postfix:postdrop /var/spool/postfix/maildrop
 chmod o+t /var/spool/postfix/maildrop
-chown -R cyrus:mail /var/spool/cyrus/mail/* /var/spool/sieve/* /var/lib/cyrus
+chown -R cyrus:mail /var/spool/cyrus/mail /var/spool/sieve /var/lib/cyrus
 
 if [ ! -f "/var/log/syslog" ]; then
 	chmod 777 /var/log
