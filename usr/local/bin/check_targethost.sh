@@ -21,5 +21,5 @@ DIFF_TIME=$((REMOTE_TIME-LOCAL_TIME))
 
 if (( "${DIFF_TIME}" > 5 )) ; then
 	read -p "install key based login to ${TARGETHOST}? [RETURN]"
-	sudo -H -u cyrus sh -c "ssh-keygen -t rsa -C cyrus@mailserver -N '' -f ~/.ssh/id_rsa && ssh-copy-id -i ~/.ssh/id_rsa.pub -p 61022 cyrus@${TARGETHOST}"
+	sudo -H -u cyrus sh -c "ssh-keygen -t rsa -C cyrus.${TARGETHOST}@mailserver -N '' -f ~/.ssh/id_rsa_${TARGETHOST} && ssh-copy-id -i ~/.ssh/id_rsa_${TARGETHOST}.pub -p 61022 cyrus@${TARGETHOST}"
 fi
