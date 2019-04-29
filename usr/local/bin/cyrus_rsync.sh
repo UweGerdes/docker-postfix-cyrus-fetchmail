@@ -26,13 +26,13 @@ if [ -z "${FETCHPID}" ] ; then
 	sudo -u cyrus ssh -p 61022 cyrus@${TARGETHOST} sudo /usr/local/bin/mailserverstop.sh
 
 	# cyrus lib files
-	sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogzi --size-only "/var/lib/cyrus/" "${TARGETHOST}:/var/lib/cyrus"
+	sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --exclude=lock --exclude=socket --delete -rtpvogzi --size-only "/var/lib/cyrus/" "${TARGETHOST}:/var/lib/cyrus"
 
 	# cyrus mail files
 	sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogzi "/var/spool/cyrus/mail/" "${TARGETHOST}:/var/spool/cyrus/mail"
 
 	# sieve script files
-	sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogzi "/var/spool/sieve/" "${TARGETHOST}:/var/spool/sieve"
+	sudo -u cyrus /usr/bin/rsync -e "ssh -p 61022 -l cyrus" --delete -rtpvogzil "/var/spool/sieve/" "${TARGETHOST}:/var/spool/sieve"
 
 	/usr/local/bin/mailserverstart.sh
 	sudo -u cyrus ssh -p 61022 cyrus@${TARGETHOST} sudo /usr/local/bin/mailserverstart.sh
