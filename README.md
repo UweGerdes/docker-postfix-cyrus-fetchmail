@@ -45,7 +45,6 @@ $ docker run -d \
 	--volume /srv/docker/mailserver/cyrus/lib:/var/lib/cyrus \
 	--volume /srv/docker/mailserver/sieve:/var/spool/sieve \
 	--volume /srv/docker/mailserver/log:/var/log \
-	--dns 192.168.178.1 \
 	uwegerdes/mailserver
 ```
 
