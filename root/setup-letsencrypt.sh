@@ -37,6 +37,9 @@ if [ -x "/root/authenticator.sh" ] ; then
 		-e "s/^(tls_server_cert:).+/\1 \/etc\/letsencrypt\/live\/$CERTBOT_DOMAIN\/fullchain.pem/" \
 		-e "s/^(tls_server_key:).+/\1 \/etc\/letsencrypt\/live\/$CERTBOT_DOMAIN\/privkey.pem/" \
 		/etc/imapd.conf
+	sed -i -r \
+		-e "s/^(0 \*\/12 \* \* \* root test -x \/usr\/bin\/certbot).+/#\1 -a \\! -d \/run\/systemd\/system \&\& perl -e 'sleep int(rand(3600))' \&\& cd \/root\/ \&\& certbot -q --manual-public-ip-logging-ok renew/" \
+		/etc/cron.d/certbot
 	postconf -e smtpd_tls_security_level=may
 	postconf -e smtp_tls_security_level=may
 	postconf -e smtp_tls_note_starttls_offer=yes
