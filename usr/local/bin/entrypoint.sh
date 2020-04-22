@@ -51,11 +51,11 @@ service rsyslog start
 service cron start
 service ssh start
 service saslauthd start
+service amavis start
 service cyrus-imapd start
-service postfix start
 freshclam
 service clamav-daemon start
-service amavis start
+service postfix start
 
 if [ -z "$(sasldblistusers2)" ]; then
 	CYRUSPASS=cyrpasswd
