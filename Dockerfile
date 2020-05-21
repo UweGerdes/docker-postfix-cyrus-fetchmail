@@ -40,7 +40,7 @@ COPY usr /usr
 COPY var /var
 
 RUN sed -i -e 's/\(printerror "could not determine current runlevel"\)/#\1/' /usr/sbin/invoke-rc.d && \
-	sed -i "s/^exit 101$/exit 0/" /usr/sbin/policy-rc.d \
+	sed -i "s/^exit 101$/exit 0/" /usr/sbin/policy-rc.d && \
 	chmod 600 /etc/postfix/sasl_password && \
 	chmod 644 /etc/ssl/certs/ssl-cert-snakeoil.pem && \
 	chown root:root /etc/ssl/certs/ssl-cert-snakeoil.pem && \
