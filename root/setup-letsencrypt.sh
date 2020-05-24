@@ -23,15 +23,16 @@ fi
 
 if [ -x "/root/authenticator.sh" ] ; then
 	echo "$0 about to install certbot"
-	apt-get install software-properties-common
-	add-apt-repository universe
-	apt-repository ppa:certbot/certbot
 	apt-get update
-	apt-get install -y bind9-host certbot
+	apt-get install software-properties-common
+	add-apt-repository -y ppa:certbot/certbot
+	apt-get update
+	apt-get install -y certbot
 	PREV_DIR="$(pwd)"
 	cd /root
 	certbot --manual --text --preferred-challenges dns \
 		--manual-auth-hook /root/authenticator.sh \
+		--register-unsafely-without-email \
 		--pre-hook /root/pre-hook.sh \
 		--post-hook /root/post-hook.sh \
 		-d "$CERTBOT_DOMAIN" \
