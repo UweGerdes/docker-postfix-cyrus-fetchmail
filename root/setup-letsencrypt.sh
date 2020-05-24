@@ -34,6 +34,7 @@ if [ -x "/root/authenticator.sh" ] ; then
 		--non-interactive \
 		--agree-tos \
 		--register-unsafely-without-email \
+		--manual-public-ip-logging-ok \
 		--manual-auth-hook /root/authenticator.sh \
 		--pre-hook /root/pre-hook.sh \
 		--post-hook /root/post-hook.sh \
