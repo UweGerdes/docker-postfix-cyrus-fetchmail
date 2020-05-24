@@ -52,7 +52,7 @@ service cron start
 service ssh start
 service saslauthd start
 service cyrus-imapd start
-# freshclam # already done in Dockerfile
+freshclam
 echo "clamav-daemon startup takes time, start: `date`"
 service clamav-daemon start
 echo "clamav-daemon startup took time, end: `date`"
