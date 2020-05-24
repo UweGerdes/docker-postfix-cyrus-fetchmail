@@ -3,6 +3,9 @@
 # initial blocking of fetchmail
 echo "stop" > /tmp/fetchstart.lock
 
+echo "Mailserver starting at `date`"
+echo "setting up directories and check/set access rights"
+
 if [ -n "$(find "/var/spool/postfix/" -maxdepth 0 -type d -empty 2>/dev/null)" ]; then
 	echo "populating /var/spool/postfix directory"
 	cp -rp /var/spool/postfix.init/* /var/spool/postfix/
