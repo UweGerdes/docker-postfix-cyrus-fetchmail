@@ -35,7 +35,8 @@ if [ -x "/root/authenticator.sh" ] ; then
 		--agree-tos \
 		--register-unsafely-without-email \
 		--manual-public-ip-logging-ok \
-		--manual-auth-hook /root/authenticator.sh \
+		 --manual-auth-hook ./hook.sh \
+		 --manual-cleanup-hook ./hook.sh \
 		--pre-hook /root/pre-hook.sh \
 		--post-hook /root/post-hook.sh \
 		-d "$CERTBOT_DOMAIN" \
