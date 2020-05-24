@@ -51,10 +51,12 @@ service rsyslog start
 service cron start
 service ssh start
 service saslauthd start
-service amavis start
 service cyrus-imapd start
 freshclam
+echo "clamav-daemon startup takes time, start: `date`"
 service clamav-daemon start
+echo "clamav-daemon startup took time, end: `date`"
+service amavis start
 service postfix start
 
 if [ -z "$(sasldblistusers2)" ]; then
