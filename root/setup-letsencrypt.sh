@@ -24,7 +24,7 @@ fi
 if [ -x "/root/authenticator.sh" ] ; then
 	echo "$0 about to install certbot"
 	apt-get update
-	apt-get install software-properties-common
+	apt-get install -y software-properties-common
 	add-apt-repository -y ppa:certbot/certbot
 	apt-get update
 	apt-get install -y certbot
