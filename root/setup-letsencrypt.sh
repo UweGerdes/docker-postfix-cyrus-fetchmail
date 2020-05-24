@@ -31,8 +31,10 @@ if [ -x "/root/authenticator.sh" ] ; then
 	PREV_DIR="$(pwd)"
 	cd /root
 	certbot --manual --text --preferred-challenges dns \
-		--manual-auth-hook /root/authenticator.sh \
+		--non-interactive \
+		--agree-tos \
 		--register-unsafely-without-email \
+		--manual-auth-hook /root/authenticator.sh \
 		--pre-hook /root/pre-hook.sh \
 		--post-hook /root/post-hook.sh \
 		-d "$CERTBOT_DOMAIN" \
