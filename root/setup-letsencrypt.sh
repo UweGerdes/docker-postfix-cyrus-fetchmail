@@ -27,7 +27,7 @@ if [ -x "/root/authenticator.sh" ] ; then
 	apt-get install -y software-properties-common
 	add-apt-repository -y ppa:certbot/certbot
 	apt-get update
-	apt-get install -y certbot
+	apt-get install -y bind9-host certbot
 	PREV_DIR="$(pwd)"
 	cd /root
 	certbot --manual --text --preferred-challenges dns \
