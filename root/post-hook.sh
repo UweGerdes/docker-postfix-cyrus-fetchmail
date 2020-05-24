@@ -24,7 +24,7 @@ if [ "$(ls -l /etc/letsencrypt/live/$CERTBOT_DOMAIN/cert.pem | awk '{print $4}')
 	echo "$(date -u +'%b %d %H:%M:%S') $0 access rights for letsencrypt need update" | tee /var/log/mailserver.err
 	chgrp -R ssl-cert /etc/letsencrypt/live /etc/letsencrypt/archive
 	chmod 750 /etc/letsencrypt/live /etc/letsencrypt/archive
-	chmod 640 /etc/letsencrypt/live /etc/letsencrypt/archive/privkey1.pem
+	chmod 640 /etc/letsencrypt/archive/$CERTBOT_DOMAIN/privkey1.pem
 fi
 
 /usr/local/bin/mailserverstart.sh
