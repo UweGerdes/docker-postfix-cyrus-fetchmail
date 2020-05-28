@@ -21,7 +21,7 @@ if [ -z "$CERTBOT_DOMAIN" ] ; then
 	exit 3
 fi
 
-if [ -x "/root/authenticator.sh" ] ; then
+if [ -x "/root/hook.sh" ] ; then
 	echo "$0 about to install certbot"
 	apt-get update
 	apt-get install -y software-properties-common
@@ -58,6 +58,6 @@ if [ -x "/root/authenticator.sh" ] ; then
 	postconf -e smtpd_tls_key_file=/etc/letsencrypt/live/$CERTBOT_DOMAIN/privkey.pem
 	cd "${PREV_DIR}"
 else
-	echo "/root/authenticator.sh not found"
+	echo "/root/hook.sh not found"
 	exit 4
 fi

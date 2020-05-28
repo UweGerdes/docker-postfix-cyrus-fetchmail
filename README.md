@@ -157,7 +157,7 @@ $ docker exec -it mailserver reconstruct.sh
 
 ## Setup Let's Encrypt
 
-If you build your image with a `/root/authenticator.sh` to be used as `certbot --manual-auth-hook` script (I'm using it with a desec.io dynamic dns and they provide a `hook.sh` script and a `.dedynauth` for the credentials) you can use a valid certificate.
+If you build your image with a `/root/hook.sh` to be used as `certbot --manual-auth-hook` script (I'm using it with a desec.io dynamic dns and they provide a `hook.sh` script and a `.dedynauth` for the credentials) you can use a valid certificate.
 
 You will also need a `/root/.certbot` with a line `CERTBOT_DOMAIN=your.domain.com`.
 
